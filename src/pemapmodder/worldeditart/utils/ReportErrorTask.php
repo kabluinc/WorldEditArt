@@ -21,14 +21,17 @@ use pocketmine\utils\Utils;
 class ReportErrorTask extends AsyncTask{
 	private $url;
 	private $extraHeaders = [];
-	public function __construct($url, $extraHeaders = []){
+
+	public function __construct(string $url, array $extraHeaders = []){
 		$this->url = $url;
 		$this->extraHeaders = $extraHeaders;
 	}
+
 	public function onRun(){
 		Utils::getURL($this->url, 30, $this->extraHeaders);
 	}
-	public static function fromArgs($url, array $args){
+
+	public static function fromArgs(string $url, array $args){
 		$url .= "?";
 		foreach($args as $k => $v){
 			$url .= urlencode($k) . "=" . urlencode($v) . "&";

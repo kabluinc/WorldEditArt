@@ -30,18 +30,15 @@ use pocketmine\utils\Utils;
 class WorldEditArt extends PluginBase{
 	private static $PLUGIN_NAME = "WorldEditArt";
 
-	/** @var SessionCollection */
-	private $sessionCollection;
 	/** @var TranslationManager */
 	private $translationManager;
 	/** @var Fridge */
 	private $objectPool;
-	/** @var DataProvider */
-	private $dataProvider;
 
 	public function onLoad(){
 		self::$PLUGIN_NAME = $this->getDescription()->getName();
 	}
+
 	public function onEnable(){
 		if(!is_dir($this->getDataFolder())){
 			mkdir($this->getDataFolder(), 0777, true);
@@ -102,10 +99,6 @@ class WorldEditArt extends PluginBase{
 			Permission::loadPermissions($perms);
 		} // register permission nodes
 
-		$this->sessionCollection = new SessionCollection($this);
-
-		new WorldEditArtCommand($this);
-
 		// TODO initialize data provider
 
 		$em1 = TextFormat::GOLD;
@@ -115,6 +108,7 @@ class WorldEditArt extends PluginBase{
 		$this->getLogger()->info("$green Enabled$em1 WorldEditArt $buildInfo->type " .
 			"#{$buildInfo->typeVersion}$green compiled on $em2" . str_replace("T", " ", $iso));
 	}
+
 	private function walkPerms(array $stack, array &$perms){
 		$prefix = implode(".", $stack) . ".";
 		foreach(array_keys($perms) as $key){
@@ -180,6 +174,7 @@ class WorldEditArt extends PluginBase{
 	public static function randomName(){
 		return str_replace(["+", "/", "="], ["Q", "Z", ""], base64_encode(self::numToBytes(mt_rand(mt_getrandmax() >> 1, mt_getrandmax()))));
 	}
+
 	private static function numToBytes($num){
 		$output = "";
 		while($num > 0){
@@ -196,9 +191,6 @@ class WorldEditArt extends PluginBase{
 	 */
 	public static function getInstance(Server $server){
 		$plugin = $server->getPluginManager()->getPlugin(self::$PLUGIN_NAME);
-		if($plugin instanceof self and $plugin->isEnabled()){
-			return $plugin;
-		}
-		return null;
+		return ($plugin instanceof self and $plugin->isEnabled()) ? $plugin : null;
 	}
 }

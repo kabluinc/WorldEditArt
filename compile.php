@@ -3,14 +3,14 @@
 /*
  * NOWHERE Plugin Workspace Framework
  *
- * Copyright (C) 2015-2016 PEMapModder
+ * Copyright (C) 2015-2016 LegendsOfMCPE
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * @author PEMapModder
+ * @author LegendsOfMCPE
  */
 
 if(version_compare(PHP_VERSION, "5.3.0", "<")){
@@ -126,3 +126,7 @@ addDir($phar, "src", "src");
 addDir($phar, "entry", "entry");
 addDir($phar, "resources", "resources");
 $phar->stopBuffering();
+
+if(is_file("priv/postCompile.php")){
+	include "priv/postCompile.php";
+}

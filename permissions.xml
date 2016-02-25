@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+	WorldEditArt
+
+	Copyright (C) 2016 LegendsOfMCPE
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Lesser General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	@author LegendsOfMCPE Team
+-->
+
 <permissions>
-	<${PLUGIN_NAME} description="Root permission node for ${PLUGIN_NAME} permissions">
-		
-	</${PLUGIN_NAME}
+	<worldeditart description="Root permission node for WorldEditArt permissions" default="false">
+		<builder description="Root permission node for actions for users" default="op">
+
+		</builder>
+	</worldeditart>
 </permissions>

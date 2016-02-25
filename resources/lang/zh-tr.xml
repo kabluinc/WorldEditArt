@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+	WorldEditArt
+
+	Copyright (C) 2016 LegendsOfMCPE
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Lesser General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	@author LegendsOfMCPE
+-->
+
+<language name="zh-tr" version="1.0" rel="1.0">
+	<authors since="1.0" updated="1.0">
+		<author>PEMapModder</author>
+	</authors>
+	<values>
+		<command>
+			<error>
+				<notFound since="1.0" updated="1.0">你輸入了未知的次指令！輸入 `//help` 以獲取更多資訊。</notFound>
+				<userLoading since="1.0" updated="1.0">載入你的使用者資料中，請稍等。</userLoading>
+			</error>
+		</command>
+	</values>
+</language>

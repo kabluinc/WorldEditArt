@@ -3,26 +3,26 @@
 /*
  * WorldEditArt
  *
- * Copyright (C) 2015 PEMapModder
+ * Copyright (C) 2016 LegendsOfMCPE
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * @author PEMapModder
+ * @author LegendsOfMCPE Team
  */
 
-namespace pemapmodder\worldeditart\utils;
+namespace WorldEditArt\Utils;
 
-use pemapmodder\worldeditart\WorldEditArt;
 use pocketmine\utils\TextFormat;
+use WorldEditArt\WorldEditArt;
 
 class Fridge{
 	/** @var WorldEditArt */
 	private $main;
-	/** @var object[] */
-	private $objects = [];
+	/** @var object[]|callable[] */
+	private $container = [];
 	/** @var int */
 	private $nextObjectId = 0;
 
@@ -31,16 +31,16 @@ class Fridge{
 	}
 
 	/**
-	 * @param object $object
+	 * @param object|callable $object
 	 *
 	 * @return int
 	 */
 	public function store($object){
-		$this->objects[$id = $this->nextId()] = $object;
-		if(count($this->objects) >= $this->main->getConfig()->getNested("advanced.objectPool.warningSize")){
-			$this->main->getLogger()->warning("OrderedObjectPool size reached " . count($this->objects) . "! Object summary:");
+		$this->container[$id = $this->nextId()] = $object;
+		if(count($this->container) >= $this->main->getConfig()->getNested("advanced.objectPool.warningSize")){
+			$this->main->getLogger()->warning("OrderedObjectPool size reached " . count($this->container) . "! Object summary:");
 			$summary = [];
-			foreach($this->objects as $obj){
+			foreach($this->container as $obj){
 				$class = get_class($obj);
 				if(isset($summary[$class])){
 					$summary[$class]++;
@@ -59,31 +59,32 @@ class Fridge{
 	/**
 	 * @param int $id
 	 *
-	 * @return object|null
+	 * @return object|callable|null
 	 */
-	public function get($id){
-		if(isset($this->objects[$id])){
-			$object = $this->objects[$id];
-			unset($this->objects[$id]);
+	public function get(int $id){
+		if(isset($this->container[$id])){
+			$object = $this->container[$id];
+			unset($this->container[$id]);
 			return $object;
 		}
 		return null;
 	}
+
 	/**
 	 * Warning: avoid using this method to prevent memory leak
 	 *
 	 * @param int $id
 	 *
-	 * @return object|null
+	 * @return object|callable|null
 	 */
-	public function getWithoutClean($id){
-		return isset($this->objects[$id]) ? $this->objects[$id] : null;
+	public function getWithoutClean(int $id){
+		return isset($this->container[$id]) ? $this->container[$id] : null;
 	}
 
 	/**
 	 * @return int
 	 */
-	private function nextId(){
+	private function nextId() : int{
 		return $this->nextObjectId++;
 	}
 }

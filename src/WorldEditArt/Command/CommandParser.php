@@ -3,24 +3,24 @@
 /*
  * WorldEditArt
  *
- * Copyright (C) 2015 PEMapModder
+ * Copyright (C) 2016 LegendsOfMCPE
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * @author PEMapModder
+ * @author LegendsOfMCPE Team
  */
 
-namespace pemapmodder\worldeditart\utils;
+namespace WorldEditArt\Command;
 
-class FormattedArguments{
-	public $plain = [];
+class CommandParser{
+	private $plain = [];
 	private $plainStarted = false;
-	public $switches = [];
-	public $opts = [];
-	public $unterminated = false;
+	private $switches = [];
+	private $opts = [];
+	private $unterminated = false;
 
 	/**
 	 * Converts a string array into a <code>FormattedArguments</code> instance.
@@ -50,10 +50,8 @@ class FormattedArguments{
 	 * switches and opts respectively.
 	 *
 	 * @param string[] $args
-	 *
-	 * @return FormattedArguments
 	 */
-	public function __construct($args){
+	public function __construct(array $args){
 		$this->plain = [];
 		$this->switches = [];
 		$this->opts = [];
@@ -93,15 +91,15 @@ class FormattedArguments{
 		reset($this->plain);
 	}
 
-	public function enabled($name){
+	public function enabled(string $name) : bool{
 		return isset($this->switches[$name]);
 	}
 
-	public function opt($name, $default = null){
+	public function opt(string $name, $default = null){
 		return isset($this->opts[$name]) ? $this->opts[$name] : $default;
 	}
 
-	public function plain($offset, $default = null){
+	public function plain(string $offset, $default = null){
 		return isset($this->plain[$offset]) ? $this->plain[$offset] : $default;
 	}
 
@@ -118,7 +116,11 @@ class FormattedArguments{
 		return $c === false ? null : $c;
 	}
 
-	public function currentPlain(){
+	public function currentPlain() : string{
 		return current($this->plain);
+	}
+
+	public function isUnterminated() : bool{
+		return $this->unterminated;
 	}
 }

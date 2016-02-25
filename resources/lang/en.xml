@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+	WorldEditArt
+
+	Copyright (C) 2016 LegendsOfMCPE
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Lesser General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	@author LegendsOfMCPE
+-->
+
+<language name="en" version="1.0" rel="1.0">
+	<authors since="1.0" updated="1.0">
+		<author>PEMapModder</author>
+	</authors>
+	<values>
+		<command>
+			<error>
+				<notFound since="1.0" updated="1.0">Unknown subcommand. Use `//help` for more information.</notFound>
+				<userLoading since="1.0" updated="1.0">Please wait. You cannot use WorldEditArt when your data are still
+					loading.
+				</userLoading>
+			</error>
+		</command>
+	</values>
+</language>

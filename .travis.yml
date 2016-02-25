@@ -1,15 +1,20 @@
-language: bash
+language: php
+php: ["7.0"]
 sudo: false
-
-before_install:
-- mkdir ../server && cd ../server
-- wget -O - -q get.pocketmine.net | bash -s - -v development
+install:
+- echo | pecl install yaml
+- echo "extension=yaml.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+- cd ..
+- mkdir pm
+- cd pm
+- wget -O - get.pocketmine.net | bash -s - -v development
 - mkdir plugins
 
-install:
-- cd $TRAVIS_BUILD_DIR && php make.php
-- cp bin/WorldEditArt_Dev.phar ../server/plugins/WorldEditArt.phar
+before_script:
+- cd $TRAVIS_BUILD_DIR
+- php compile.php
+- cp compile/WorldEditArt_Dev.phar ../pm/plugins
 
 script:
-- cd $TRAVIS_BUILD_DIR/../server
-- ./start.sh --disable-ansi --no-wizard
+- cd ../pm
+- ./start.sh

@@ -13,9 +13,17 @@
  * @author LegendsOfMCPE
  */
 
-namespace WorldEditArt\Lang;
+namespace WorldEditArt\InternalConstants;
 
 class Terms{
 	const COMMAND_ERROR_NOT_FOUND = "command.error.notFound";
 	const COMMAND_ERROR_USER_LOADING = "command.error.userLoading";
+	const COMMAND_ERROR_NO_PERM = "command.error.noPerm";
+
+	const COMMAND_HELP_DESCRIPTION = "command.help.description";
+	const COMMAND_HELP_USAGE = "command.help.usage";
+
+	const COMMAND_HELP_INDIVIDUAL = "command.help.header.individual";
+	const COMMAND_HELP_PAGE_HEADER = "command.help.pageHeader";
+	const COMMAND_HELP_PAGE_ENTRY = "command.help.pageEntry";
 }

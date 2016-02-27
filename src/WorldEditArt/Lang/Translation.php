@@ -20,12 +20,21 @@ class Translation{
 	private $id, $value;
 	/** @type string */
 	private $since, $updated;
+	private $params = [];
 
-	public function __construct(string $id, string $value, string $since, string $updated){
+	public function __construct(string $id, string $value, string $since, string $updated, array $params){
 		$this->id = $id;
+		$value = preg_replace("/[\r\n][\r\n\t ]+/", " ", $value);
+		$value = str_replace("\\n", "\n", $value);
+		$value = str_replace("\\t", "    ", $value);
 		$this->value = $value;
 		$this->since = $since;
 		$this->updated = $updated;
+		$this->params = $params;
+	}
+
+	public function getId() : string{
+		return $this->id;
 	}
 
 	public function getValue() : string{
@@ -38,5 +47,22 @@ class Translation{
 
 	public function getUpdated() : string{
 		return $this->updated;
+	}
+
+	public function define(string $constant, string $value){
+		$this->value = str_replace("\${" . $constant . "}", $value, $this->value);
+	}
+
+	public function toString(array $vars = []) : string{
+		foreach($this->params as $param){
+			if(!isset($vars[$param])){
+				throw new \InvalidArgumentException("Missing parameter $param");
+			}
+		}
+		$value = $this->value;
+		foreach($vars as $varName => $var){
+			$value = str_replace("\${" . $varName . "}", $var, $value);
+		}
+		return $value;
 	}
 }

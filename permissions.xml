@@ -14,8 +14,13 @@
 -->
 
 <permissions>
-	<worldeditart description="Root permission node for WorldEditArt permissions" default="false">
-		<builder description="Root permission node for actions for users" default="op">
+	<worldeditart description="Root node for WorldEditArt permissions" default="false">
+		<generic description="Root node for generic (not builder or admin only) permissions" default="op">
+			<commands description="Permission for all generic commands" default="op">
+				<command description="Allow using //help, required to use any other //*** commands" default="op"/>
+			</commands>
+		</generic>
+		<builder description="Root node for builder permissions" default="op">
 
 		</builder>
 	</worldeditart>

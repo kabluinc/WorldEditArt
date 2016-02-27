@@ -15,15 +15,22 @@
 
 namespace WorldEditArt\Lang;
 
+use WorldEditArt\Utils\GeneralUtils;
+use WorldEditArt\WorldEditArt;
+
 class LanguageFileParser{
+	/** @type WorldEditArt */
+	private $main;
 	/** @type resource */
 	private $parser;
 
 	/** @type string|null */
 	private $buffer = null;
-	private $expectingAuthors = false, $valuesMode = false, $justEndedElement = false;
-	private $tmpSince = null, $tmpUpdated = null;
+	private $expectingAuthors = false, $expectingConstants = false, $valuesMode = false, $justEndedElement = false;
 	private $stack = [];
+	private $sinceStack = [], $updatedStack = [];
+	private $lastParams = [];
+	private $lastConstantName = "";
 
 	/** @type string */
 	private $name;
@@ -33,15 +40,22 @@ class LanguageFileParser{
 	private $relEng;
 	/** @type string[] */
 	private $authors = [];
+	private $constants = [];
 	/** @type Translation[] */
 	private $values = [];
 
-	public function __construct(string $xml){
+	public function __construct(string $xml, WorldEditArt $main){
+		$this->main = $main;
 		$this->parser = xml_parser_create();
 		xml_set_object($this->parser, $this);
+		xml_parser_set_option($this->parser, XML_OPTION_CASE_FOLDING, 0);
 		xml_set_element_handler($this->parser, [$this, "startEl"], [$this, "endEl"]);
 		xml_set_character_data_handler($this->parser, [$this, "rawText"]);
 		xml_parse($this->parser, $xml, true);
+		$error = xml_get_error_code($this->parser);
+		if($error !== XML_ERROR_NONE){
+			throw new \RuntimeException("Error parsing language file: " . xml_error_string($error));
+		}
 		xml_parser_free($this->parser);
 	}
 
@@ -49,20 +63,36 @@ class LanguageFileParser{
 		$parser, string $name, array $attr){
 		$attr = array_change_key_case($attr, CASE_LOWER);
 		if($this->valuesMode){
-			$this->stack[] = strtolower($name);
+			$this->stack[] = $name;
 			$this->buffer = "";
-			$this->tmpSince = $attr["since"] ?? $this->tmpSince;
-			$this->tmpUpdated = $attr["updated"] ?? $this->tmpUpdated;
+			if(isset($attr["since"])){
+				$this->sinceStack[count($this->stack) - 1] = $attr["since"];
+			}
+			if(isset($attr["updated"])){
+				$this->updatedStack[count($this->stack) - 1] = $attr["updated"];
+			}
+			if(isset($attr["vars"])){
+				$this->lastParams = explode(",", $attr["vars"]);
+			}
 			$this->justEndedElement = false;
-		}elseif($name === "LANGUAGE"){
+		}elseif($name === "language"){
 			$this->name = $attr["name"];
 			$this->version = $attr["version"];
 			$this->relEng = $attr["rel"] ?? $this->version;
-		}elseif($name === "AUTHORS"){
+		}elseif($name === "authors"){
 			$this->expectingAuthors = true;
-		}elseif($this->expectingAuthors and $name === "AUTHOR"){
+		}elseif($this->expectingAuthors and $name === "author"){
 			$this->buffer = "";
-		}elseif($name === "VALUES"){
+		}elseif($name === "constants"){
+			$this->expectingConstants = true;
+		}elseif($this->expectingConstants and $name === "constant"){
+			if(!isset($attr["name"])){
+				$line = xml_get_current_line_number($this->parser);
+				$this->main->getLogger()->warning("Error on line $line of language file: Constant does not have a name");
+			}
+			$this->lastConstantName = $attr["name"];
+			$this->buffer = "";
+		}elseif($name === "values"){
 			$this->valuesMode = true;
 		}
 	}
@@ -72,20 +102,36 @@ class LanguageFileParser{
 		if($this->valuesMode){
 			$key = implode(".", $this->stack);
 			array_pop($this->stack);
+//			echo "Exited " . $name . ", key $key, buffer $this->buffer\n";
 
-			if($this->justEndedElement and count($this->stack) > 0){
+			if(!$this->justEndedElement){
+//				echo $key, PHP_EOL;
 				$value = trim($this->buffer);
-				$this->values[$key] = new Translation($key, $value, $this->tmpSince, $this->tmpUpdated);
+				if(strlen($value) > 0){
+					$this->values[$key] = new Translation($key, $value, GeneralUtils::valueForMaxKeyInArray($this->sinceStack, $this->getVersion()), GeneralUtils::valueForMaxKeyInArray($this->updatedStack, $this->getVersion()), $this->lastParams);
+				}
 				$this->buffer = null;
+			}
+
+			if(isset($this->sinceStack[$offset = count($this->stack)])){
+				unset($this->sinceStack[$offset]);
+			}
+			if(isset($this->updatedStack[$offset = count($this->stack)])){
+				unset($this->updatedStack[$offset]);
 			}
 			$this->justEndedElement = true;
 		}
-		if($this->expectingAuthors and $name === "AUTHOR"){
+		if($this->expectingAuthors and $name === "author"){
 			$this->authors[] = trim($this->buffer);
 			$this->buffer = null;
-		}elseif($name === "AUTHORS"){
+		}elseif($name === "authors"){
 			$this->expectingAuthors = false;
-		}elseif($name === "VALUES"){
+		}elseif($this->expectingConstants and $name === "constant"){
+			$this->constants[$this->lastConstantName] = trim($this->buffer);
+			$this->buffer = null;
+		}elseif($name === "constants"){
+			$this->expectingConstants = false;
+		}elseif($name === "values"){
 			$this->valuesMode = false;
 		}
 	}
@@ -117,7 +163,11 @@ class LanguageFileParser{
 		return $this->values;
 	}
 
+	public function getConstants(){
+		return $this->constants;
+	}
+
 	public function finalize(){
-		unset($this->parser, $this->buffer, $this->expectingAuthors, $this->valuesMode, $this->justEndedElement, $this->tmpSince, $this->tmpUpdated, $this->stack);
+		unset($this->parser, $this->buffer, $this->expectingAuthors, $this->expectingConstants, $this->valuesMode, $this->justEndedElement, $this->stack, $this->sinceStack, $this->updatedStack, $this->lastConstantName);
 	}
 }

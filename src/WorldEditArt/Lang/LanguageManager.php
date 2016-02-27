@@ -49,33 +49,44 @@ class LanguageManager{
 
 		if(!isset($this->langs["en"])){
 			$this->main->getLogger()->alert("en.xml missing in lang folder! Default en.xml will be loaded as fallback language.");
-			$this->parse($this->main->getResourceContents("lang/en.xml"));
+			$this->parse($this->main->getResourceContents("lang/en.xml"), "en");
 		}
+		$this->parse($this->main->getResourceContents("lang/en.xml"), "/backup");
+
+		var_dump(array_keys($this->langs));
 	}
 
-	private function parse(string $langFile){
-		$parser = new LanguageFileParser($langFile);
+	private function parse(string $langFile, $forceName = null){
+		$parser = new LanguageFileParser($langFile, $this->main);
+		$name = $forceName ?? $parser->getName();
 		foreach($parser->getValues() as $id => $term){
-			if(!isset($this->translations[$id][$parser->getName()])){
-				$this->translations[$id][$parser->getName()] = $term;
+			if(!isset($this->translations[$id][$name])){
+				foreach($parser->getConstants() as $constant => $value){
+					$term->define($constant, $value);
+				}
+				$this->translations[$id][$name] = $term;
 			}
 		}
+
 		$parser->finalize();
-		$this->langs[$parser->getName()] = $parser;
+//		foreach($parser->getValues() as $value){
+//			echo json_encode(["id" => $value->getId(), "value" => $value->getValue(), "since" => $value->getSince(), "updated" => $value->getUpdated()], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), PHP_EOL;
+//		}
+		$this->langs[$name] = $parser;
 	}
 
-	public function getTerm(string $id, string ...$langs) : string{
+	public function getTerm(string $id, array $langs = [], array $vars = []) : string{
 		if(isset($this->translations[$id])){
 			$trans = $this->translations[$id];
 			foreach($langs as $lang){
 				if(isset($trans[$lang])){
-					return $trans[$lang];
+					return $trans[$lang]->toString($vars);
 				}
 			}
-			if(isset($trans["en"])){
-				return $trans["en"];
+			if(isset($trans["/backup"])){
+				return $trans["/backup"]->toString($vars);
 			}else{
-				$this->main->getLogger()->error("Failed to find undefined (from en.xml) string '$id'");
+				$this->main->getLogger()->error("Failed to find undefined string '$id' (from languages: " . implode(", ", $langs) . ", default en)");
 				return $id;
 			}
 		}else{

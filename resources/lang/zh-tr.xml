@@ -17,12 +17,38 @@
 	<authors since="1.0" updated="1.0">
 		<author>PEMapModder</author>
 	</authors>
+	<constants>
+		<constant name="${FORMAT_ERROR}">§c</constant>
+		<constant name="${FORMAT_WARNING}">§e</constant>
+		<constant name="${FORMAT_PROGRESS}">§8</constant>
+		<constant name="${FORMAT_SUCCESS}">§a</constant>
+		<constant name="${FORMAT_INFO}">§f</constant>
+		<constant name="${FORMAT_HIGHLIGHT}">§b</constant>
+		<constant name="${FORMAT_HIGHLIGHT_1}">§b</constant>
+		<constant name="${FORMAT_HIGHLIGHT_2}">§9</constant>
+		<constant name="${FORMAT_HIGHLIGHT_3}">§5</constant>
+		<constant name="${FORMAT_HIGHLIGHT_4}">§d</constant>
+	</constants>
 	<values>
 		<command>
 			<error>
 				<notFound since="1.0" updated="1.0">你輸入了未知的次指令！輸入 `//help` 以獲取更多資訊。</notFound>
 				<userLoading since="1.0" updated="1.0">載入你的使用者資料中，請稍等。</userLoading>
+				<noPerm since="1.0" updated="1.0">你沒有權限使用此指令！</noPerm>
 			</error>
+			<help since="1.0" updated="1.0">
+				<description>顯示這個協助訊息</description>
+				<usage>//help &lt;頁數&gt;</usage>
+				<individual vars="COMMAND_NAME,COMMAND_DESCRIPTION,COMMAND_USAGE,COMMAND_ALIASES">
+					//${COMMAND_NAME}:\n說明︰${COMMAND_DESCRIPTION}\n用法︰${COMMAND_USAGE}\n簡寫︰${COMMAND_ALIASES}
+				</individual>
+				<pageHeader vars="PAGE_NUMBER,MAX_PAGES">
+					WorldEditArt 說明 -- 第${PAGE_NUMBER}頁，共${MAX_PAGES}頁
+				</pageHeader>
+				<pageEntry vars="COMMAND_NAME,COMMAND_DESCRIPTION">//${COMMAND_NAME}︰${COMMAND_DESCRIPTION}</pageEntry>
+			</help>
 		</command>
+		<phrases>
+		</phrases>
 	</values>
 </language>

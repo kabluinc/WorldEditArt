@@ -36,8 +36,19 @@ abstract class SubCommand{
 		return [];
 	}
 
-	public function run(WorldEditArtUser $user, string ...$args){
-		// TODO
-		return null;
+	public abstract function getDescription(WorldEditArtUser $user) : string;
+
+	public function getDetailedDescription(WorldEditArtUser $user) : string{
+		return $this->getDescription($user);
 	}
+
+	public abstract function getUsage(WorldEditArtUser $user) : string;
+
+	public function getDetailedUsage(WorldEditArtUser $user) : string{
+		return $this->getUsage($user);
+	}
+
+	public abstract function run(WorldEditArtUser $user, string ...$args);
+
+	public abstract function hasPermission(WorldEditArtUser $user);
 }

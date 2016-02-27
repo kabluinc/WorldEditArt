@@ -15,7 +15,21 @@
 
 namespace WorldEditArt\User;
 
-abstract class WorldEditArtUser{
+use pocketmine\permission\Permissible;
+use WorldEditArt\DataProvider\Model\UserData;
+use WorldEditArt\WorldEditArt;
+
+abstract class WorldEditArtUser implements Permissible{
+	/** @type WorldEditArt */
+	private $main;
+	/** @type UserData */
+	private $data;
+
+	public function __construct(WorldEditArt $main, UserData $data){
+		$this->main = $main;
+		$this->data = $data;
+	}
+
 	public abstract function getType() : string;
 
 	public abstract function getName() : string;
@@ -23,4 +37,18 @@ abstract class WorldEditArtUser{
 	public function getUniqueName() : string{
 		return $this->getType() . ":" . $this->getName();
 	}
+
+	public function getLangs() : array{
+		return $this->data->langs;
+	}
+
+	public function translate(string $id, array $vars = []){
+		return $this->main->translate($id, $this->getLangs(), $vars);
+	}
+
+	public function sendMessage(string $id, array $vars = []){
+		$this->sendRawMessage((substr($id, 0, 5) === "%raw%") ? $id : $this->main->translate($id, $vars));
+	}
+
+	public abstract function sendRawMessage(string $message);
 }

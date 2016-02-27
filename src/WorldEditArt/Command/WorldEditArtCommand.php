@@ -20,7 +20,8 @@ use pocketmine\command\CommandSender;
 use pocketmine\command\PluginIdentifiableCommand;
 use pocketmine\Player;
 use WorldEditArt\Event\WorldEditArtCommandInitEvent;
-use WorldEditArt\Lang\Terms;
+use WorldEditArt\InternalConstants\PermissionNames;
+use WorldEditArt\InternalConstants\Terms;
 use WorldEditArt\User\WorldEditArtUser;
 use WorldEditArt\WorldEditArt;
 
@@ -41,6 +42,7 @@ class WorldEditArtCommand extends Command implements PluginIdentifiableCommand{
 			$aliases[] = "/" . $alias;
 		}
 		parent::__construct("/", "WorldEditArt command", "Execute // for details", $aliases);
+		$this->setPermission(PermissionNames::COMMAND_MAIN);
 		$plugin->getServer()->getCommandMap()->register("/", $this);
 	}
 
@@ -56,6 +58,10 @@ class WorldEditArtCommand extends Command implements PluginIdentifiableCommand{
 	}
 
 	public function execute(CommandSender $sender, $commandLabel, array $args){
+		if(!$sender->hasPermission(PermissionNames::COMMAND_MAIN)){
+			$sender->sendMessage($this->getMain()->translate(Terms::COMMAND_ERROR_NO_PERM));
+			return false;
+		}
 		if($commandLabel{0} === "/"){
 			$alias = substr($commandLabel, 1);
 		}else{
@@ -70,15 +76,25 @@ class WorldEditArtCommand extends Command implements PluginIdentifiableCommand{
 			return false;
 		}
 		$user = $this->getMain()->getUser($sender);
-		if($user instanceof WorldEditArtUser){
-			$result = $this->subCmds[$alias]->run($user, ...$args);
-			if(is_string($result)){
-				$sender->sendMessage($result);
-			}
-			return true;
-		}else{
+		if(!($user instanceof WorldEditArtUser)){
 			$sender->sendMessage($this->getMain()->translate(Terms::COMMAND_ERROR_USER_LOADING));
 			return false;
 		}
+		$result = $this->subCmds[$alias]->run($user, ...$args);
+		if(is_string($result)){
+			$sender->sendMessage($result);
+		}
+		return true;
+	}
+
+	/**
+	 * @return SubCommand[]
+	 */
+	public function getSubCommands() : array{
+		return $this->subCmds;
+	}
+
+	public function getSubCommand(string $name){
+		return $this->subCmds[$name] ?? null;
 	}
 }

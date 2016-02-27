@@ -15,13 +15,18 @@
 
 namespace WorldEditArt\User;
 
+use pocketmine\permission\PermissionAttachment;
 use pocketmine\Player;
+use pocketmine\plugin\Plugin;
+use WorldEditArt\DataProvider\Model\UserData;
+use WorldEditArt\WorldEditArt;
 
 class PlayerUser extends WorldEditArtUser{
 	/** @type Player */
 	private $player;
 
-	public function __construct(Player $player){
+	public function __construct(WorldEditArt $main, Player $player, UserData $data){
+		parent::__construct($main, $data);
 		$this->player = $player;
 	}
 
@@ -31,5 +36,41 @@ class PlayerUser extends WorldEditArtUser{
 
 	public function getName() : string{
 		return strtolower($this->player->getName());
+	}
+
+	public function sendRawMessage(string $message){
+		$this->player->sendMessage($message);
+	}
+
+	public function isPermissionSet($name){
+		return $this->player->isPermissionSet($name);
+	}
+
+	public function hasPermission($name){
+		return $this->player->hasPermission($name);
+	}
+
+	public function addAttachment(Plugin $plugin, $name = null, $value = null){
+		return $this->player->addAttachment($plugin, $name, $value);
+	}
+
+	public function removeAttachment(PermissionAttachment $attachment){
+		$this->player->removeAttachment($attachment);
+	}
+
+	public function recalculatePermissions(){
+		$this->player->recalculatePermissions();
+	}
+
+	public function getEffectivePermissions(){
+		return $this->player->getEffectivePermissions();
+	}
+
+	public function isOp(){
+		return $this->player->isOp();
+	}
+
+	public function setOp($value){
+		$this->player->setOp($value);
 	}
 }

@@ -17,14 +17,45 @@
 	<authors since="1.0" updated="1.0">
 		<author>PEMapModder</author>
 	</authors>
+	<constants>
+		<constant name="FORMAT_ERROR">§c</constant>
+		<constant name="FORMAT_WARNING">§e</constant>
+		<constant name="FORMAT_PROGRESS">§8</constant>
+		<constant name="FORMAT_SUCCESS">§a</constant>
+		<constant name="FORMAT_INFO">§f</constant>
+		<constant name="FORMAT_HIGHLIGHT">§b</constant>
+		<constant name="FORMAT_HIGHLIGHT_1">§b</constant>
+		<constant name="FORMAT_HIGHLIGHT_2">§9</constant>
+		<constant name="FORMAT_HIGHLIGHT_3">§5</constant>
+		<constant name="FORMAT_HIGHLIGHT_4">§d</constant>
+	</constants>
 	<values>
 		<command>
 			<error>
-				<notFound since="1.0" updated="1.0">Unknown subcommand. Use `//help` for more information.</notFound>
-				<userLoading since="1.0" updated="1.0">Please wait. You cannot use WorldEditArt when your data are still
+				<notFound since="1.0" updated="1.0">${FORMAT_ERROR}Unknown subcommand. Use `//help` for more
+					information.
+				</notFound>
+				<userLoading since="1.0" updated="1.0">${FORMAT_PROGRESS}Please wait. You cannot use WorldEditArt when
+					your data are still
 					loading.
 				</userLoading>
+				<noPerm since="1.0" updated="1.0">${FORMAT_WARNING}You don't have permission to use this command.
+				</noPerm>
 			</error>
+			<help since="1.0" updated="1.0">
+				<description>Show this help message</description>
+				<usage>//help &lt;page&gt;</usage>
+				<individual vars="COMMAND_NAME,COMMAND_DESCRIPTION,COMMAND_USAGE,COMMAND_ALIASES">
+					//${COMMAND_NAME}:\nDescription: ${COMMAND_DESCRIPTION}\nUsage: ${COMMAND_USAGE}\nAliases:
+					${COMMAND_ALIASES}
+				</individual>
+				<pageHeader vars="PAGE_NUMBER,MAX_PAGES">
+					Showing WorldEditArt help page ${PAGE_NUMBER} of ${MAX_PAGES}:
+				</pageHeader>
+				<pageEntry vars="COMMAND_NAME,COMMAND_DESCRIPTION">//${COMMAND_NAME}: ${COMMAND_DESCRIPTION}</pageEntry>
+			</help>
 		</command>
+		<phrases>
+		</phrases>
 	</values>
 </language>

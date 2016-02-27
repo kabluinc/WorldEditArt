@@ -34,6 +34,8 @@ class WorldEditArt extends PluginBase{
 	private $fridge;
 	/** @type DataProvider */
 	private $dataProvider;
+	/** @type WorldEditArtCommand */
+	private $command;
 
 	/** @type WorldEditArtUser[] */
 	private $users = [];
@@ -46,8 +48,8 @@ class WorldEditArt extends PluginBase{
 		$this->saveDefaultConfig();
 		$this->langMgr = new LanguageManager($this);
 		$this->fridge = new Fridge($this);
-		$this->dataProvider = new SerializedDataProvider();
-		new WorldEditArtCommand($this);
+		$this->dataProvider = new SerializedDataProvider($this);
+		$this->command = new WorldEditArtCommand($this);
 	}
 
 	public function getResourceFolder(string $file = "") : string{
@@ -76,13 +78,17 @@ class WorldEditArt extends PluginBase{
 		return $this->dataProvider;
 	}
 
+	public function getMainCommand() : WorldEditArtCommand{
+		return $this->command;
+	}
+
 	public static function getInstance(Server $server) : WorldEditArt{
 		return ($instance = $server->getPluginManager()->getPlugin(self::$PLUGIN_NAME)) !== null and $instance->isEnabled() ?
 			$instance : null;
 	}
 
-	public function translate(string $id, ...$langs) : string{
-		return $this->getLanguageManager()->getTerm($id, ...$langs);
+	public function translate(string $id, array $langs = [], array $vars = []) : string{
+		return $this->getLanguageManager()->getTerm($id, $langs, $vars);
 	}
 
 	/**

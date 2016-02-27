@@ -19,7 +19,7 @@ use WorldEditArt\User\WorldEditArtUser;
 use WorldEditArt\WorldEditArt;
 
 abstract class SubCommand{
-	/** @type WorldEditArt */
+	/** @var WorldEditArt $main */
 	private $main;
 
 	public function __construct(WorldEditArt $main){

@@ -28,17 +28,23 @@ use WorldEditArt\Utils\Fridge;
 class WorldEditArt extends PluginBase{
 	private static $PLUGIN_NAME = "WorldEditArt";
 
-	/** @type LanguageManager */
+	/** @var LanguageManager $langMgr */
 	private $langMgr;
-	/** @type Fridge */
+	/** @var Fridge $fridge */
 	private $fridge;
-	/** @type DataProvider */
+	/** @var DataProvider $dataProvider */
 	private $dataProvider;
-	/** @type WorldEditArtCommand */
+	/** @var WorldEditArtCommand $command */
 	private $command;
+	/** @var EventListener */
+	private $listener;
 
-	/** @type WorldEditArtUser[] */
+	/** @var WorldEditArtUser[] $users */
 	private $users = [];
+
+	public static function getPluginName() : string{
+		return self::$PLUGIN_NAME;
+	}
 
 	public function onLoad(){
 		self::$PLUGIN_NAME = $this->getName();
@@ -50,6 +56,7 @@ class WorldEditArt extends PluginBase{
 		$this->fridge = new Fridge($this);
 		$this->dataProvider = new SerializedDataProvider($this);
 		$this->command = new WorldEditArtCommand($this);
+		$this->listener = new EventListener($this);
 	}
 
 	public function getResourceFolder(string $file = "") : string{
@@ -82,6 +89,10 @@ class WorldEditArt extends PluginBase{
 		return $this->command;
 	}
 
+	public function getListener() : EventListener{
+		return $this->listener;
+	}
+
 	public static function getInstance(Server $server) : WorldEditArt{
 		return ($instance = $server->getPluginManager()->getPlugin(self::$PLUGIN_NAME)) !== null and $instance->isEnabled() ?
 			$instance : null;
@@ -98,5 +109,14 @@ class WorldEditArt extends PluginBase{
 	 */
 	public function getUser(Player $player){
 		return $this->users[$player->getId()] ?? null;
+	}
+
+	public function addUser(WorldEditArtUser $user){
+		$this->users[$user->getUniqueName()] = $user;
+	}
+
+	public function endUser(WorldEditArtUser $user){
+		$this->users[$user->getUniqueName()]->save();
+		unset($this->users[$user->getUniqueName()]);
 	}
 }

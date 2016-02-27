@@ -29,7 +29,7 @@ function addDir(Phar $phar, $from, $localDir){
 		echo "WARNING: $from is not a directory!";
 		return;
 	}
-	/** @type SplFileInfo $file */
+	/** @var SplFileInfo $file */
 	foreach(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($from)) as $file){
 		if(!$file->isFile()){
 			continue;

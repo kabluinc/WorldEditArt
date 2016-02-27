@@ -19,4 +19,6 @@ use WorldEditArt\DataProvider\Model\UserData;
 
 interface DataProvider{
 	public function getUserData(string $type, string $name) : UserData;
+
+	public function saveUserData(UserData $data);
 }

@@ -33,11 +33,15 @@ class UserData{
 	const ACTION_SELECT_CYLINDER_RADIUS = 6;
 	const ACTION_SELECT_CYLINDER_HEIGHT = 7;
 
-	public $type, $name;
+	/** @var string $type */
+	public $type;
+	/** @var string $name */
+	public $name;
 
-	/** @type int[] */
+	/** @var int[] $itemActions */
 	public $itemActions = [];
 
+	/** @var string[] $langs */
 	public $langs = [];
 
 	public function __construct(string $type, string $name){

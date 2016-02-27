@@ -26,9 +26,9 @@ use WorldEditArt\User\WorldEditArtUser;
 use WorldEditArt\WorldEditArt;
 
 class WorldEditArtCommand extends Command implements PluginIdentifiableCommand{
-	/** @type WorldEditArt */
+	/** @var WorldEditArt $plugin */
 	private $plugin;
-	/** @type SubCommand[] */
+	/** @var SubCommand[] $subCmds */
 	private $subCmds;
 
 	public function __construct(WorldEditArt $plugin){

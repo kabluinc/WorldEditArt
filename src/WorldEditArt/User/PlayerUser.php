@@ -22,7 +22,9 @@ use WorldEditArt\DataProvider\Model\UserData;
 use WorldEditArt\WorldEditArt;
 
 class PlayerUser extends WorldEditArtUser{
-	/** @type Player */
+	const TYPE_NAME = "WorldEditArt.User";
+
+	/** @var Player $player */
 	private $player;
 
 	public function __construct(WorldEditArt $main, Player $player, UserData $data){

@@ -20,9 +20,9 @@ use WorldEditArt\DataProvider\Model\UserData;
 use WorldEditArt\WorldEditArt;
 
 abstract class WorldEditArtUser implements Permissible{
-	/** @type WorldEditArt */
+	/** @var WorldEditArt $main */
 	private $main;
-	/** @type UserData */
+	/** @var UserData $data */
 	private $data;
 
 	public function __construct(WorldEditArt $main, UserData $data){
@@ -35,11 +35,15 @@ abstract class WorldEditArtUser implements Permissible{
 	public abstract function getName() : string;
 
 	public function getUniqueName() : string{
-		return $this->getType() . ":" . $this->getName();
+		return $this->getType() . "/" . $this->getName();
 	}
 
 	public function getLangs() : array{
 		return $this->data->langs;
+	}
+
+	public function getData() : UserData{
+		return $this->data;
 	}
 
 	public function translate(string $id, array $vars = []){
@@ -51,4 +55,8 @@ abstract class WorldEditArtUser implements Permissible{
 	}
 
 	public abstract function sendRawMessage(string $message);
+
+	public function save(){
+		$this->main->getDataProvider()->saveUserData($this->data);
+	}
 }

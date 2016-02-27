@@ -16,9 +16,9 @@
 namespace WorldEditArt\Lang;
 
 class Translation{
-	/** @type string */
+	/** @var string $id */
 	private $id, $value;
-	/** @type string */
+	/** @var string $since */
 	private $since, $updated;
 	private $params = [];
 

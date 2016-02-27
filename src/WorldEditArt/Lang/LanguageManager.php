@@ -18,13 +18,13 @@ namespace WorldEditArt\Lang;
 use WorldEditArt\WorldEditArt;
 
 class LanguageManager{
-	/** @type WorldEditArt $main */
+	/** @var WorldEditArt $main */
 	private $main;
 
-	/** @type Translation[][] */
+	/** @var Translation[][] $translations */
 	private $translations = [];
 
-	/** @type LanguageFileParser[] */
+	/** @var LanguageFileParser[] $langs */
 	private $langs = [];
 
 	public function __construct(WorldEditArt $main){
@@ -34,7 +34,7 @@ class LanguageManager{
 		if(!is_dir($dir)){
 			mkdir($dir);
 			$it = new \DirectoryIterator($main->getResourceFolder("lang/"));
-			/** @type \SplFileInfo $file */
+			/** @var \SplFileInfo $file */
 			foreach($it as $file){
 				copy($file->getPathname(), $dir . $file->getBasename());
 			}

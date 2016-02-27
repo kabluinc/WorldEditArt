@@ -21,7 +21,7 @@ use WorldEditArt\WorldEditArt;
 class WorldEditArtCommandInitEvent extends WorldEditArtEvent{
 	public static $handlerList = null;
 
-	/** @type SubCommand[] */
+	/** @var SubCommand[] $subCmds */
 	private $subCmds = [];
 
 	public function __construct(WorldEditArt $plugin, SubCommand ...$subCmds){

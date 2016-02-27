@@ -19,13 +19,14 @@ use WorldEditArt\DataProvider\Model\UserData;
 use WorldEditArt\WorldEditArt;
 
 class SerializedDataProvider implements DataProvider{
-	/** @type WorldEditArt */
+	/** @var WorldEditArt $main */
 	private $main;
+	/** @var string $path */
 	private $path;
 
 	public function __construct(WorldEditArt $main){
 		$this->main = $main;
-		$this->path = $main->getDataFolder() . "players/";
+		$this->path = $main->getDataFolder() . "users/";
 		mkdir($this->path);
 	}
 
@@ -34,7 +35,7 @@ class SerializedDataProvider implements DataProvider{
 		if(is_file($file = $this->path . $type . "/" . $name . ".json")){
 			$json = json_decode(file_get_contents($file), true);
 			$data->langs = $json["langs"];
-			$data->itemActions = $json->itemActions;
+			$data->itemActions = $json["itemActions"];
 		}
 		return $data;
 	}
@@ -46,7 +47,8 @@ class SerializedDataProvider implements DataProvider{
 		file_put_contents($this->path . $data->type . "/" . $data->name . ".json", json_encode([
 			"type" => $data->type,
 			"name" => $data->name,
-
+			"itemActions" => $data->itemActions,
+			"langs" => $data->langs,
 		], JSON_PRETTY_PRINT | JSON_BIGINT_AS_STRING | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
 	}
 }

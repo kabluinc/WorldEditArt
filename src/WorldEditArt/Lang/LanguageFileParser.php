@@ -19,12 +19,12 @@ use WorldEditArt\Utils\GeneralUtils;
 use WorldEditArt\WorldEditArt;
 
 class LanguageFileParser{
-	/** @type WorldEditArt */
+	/** @var WorldEditArt $main */
 	private $main;
-	/** @type resource */
+	/** @var resource $parser */
 	private $parser;
 
-	/** @type string|null */
+	/** @var string|null $buffer */
 	private $buffer = null;
 	private $expectingAuthors = false, $expectingConstants = false, $valuesMode = false, $justEndedElement = false;
 	private $stack = [];
@@ -32,16 +32,16 @@ class LanguageFileParser{
 	private $lastParams = [];
 	private $lastConstantName = "";
 
-	/** @type string */
+	/** @var string $name */
 	private $name;
-	/** @type string */
+	/** @var string $version */
 	private $version;
-	/** @type string */
+	/** @var string $relEng */
 	private $relEng;
-	/** @type string[] */
+	/** @var string[] $authors */
 	private $authors = [];
 	private $constants = [];
-	/** @type Translation[] */
+	/** @var Translation[] $values */
 	private $values = [];
 
 	public function __construct(string $xml, WorldEditArt $main){

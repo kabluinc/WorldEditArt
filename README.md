@@ -1,4 +1,4 @@
-WorldEditArt - ![WorldEditArt](plugin_icon.png)
+WorldEditArt ![WorldEditArt](plugin_icon.png)
 ===
 
 Please see [the webpage on gh-pages](//pemapmodder.github.io/WorldEditArt/guide/) for user guides.
@@ -71,22 +71,9 @@ The language framework of this plugin is _XML-based_, _backwards-compatible_ wit
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<!--
-	WorldEditArt
-
-	Copyright (C) 2016 LegendsOfMCPE
-
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Lesser General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-
-	@author LegendsOfMCPE
--->
-
 <language name="en" version="1.0" rel="1.0">
 	<authors since="1.0" updated="1.0">
-		<author>PEMapModder</author>
+		<author>(Your name here)</author>
 	</authors>
 	<constants>
 		<constant name="FORMAT_ERROR">§c</constant>

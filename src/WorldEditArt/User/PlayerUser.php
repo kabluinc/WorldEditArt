@@ -15,6 +15,7 @@
 
 namespace WorldEditArt\User;
 
+use pocketmine\level\Location;
 use pocketmine\permission\PermissionAttachment;
 use pocketmine\Player;
 use pocketmine\plugin\Plugin;
@@ -42,6 +43,10 @@ class PlayerUser extends WorldEditArtUser{
 
 	public function sendRawMessage(string $message){
 		$this->player->sendMessage($message);
+	}
+
+	public function getLocation() : Location{
+		return $this->player->getLocation();
 	}
 
 	public function isPermissionSet($name){

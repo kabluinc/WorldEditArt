@@ -112,10 +112,12 @@ class WorldEditArt extends PluginBase{
 	}
 
 	public function addUser(WorldEditArtUser $user){
+		assert($user !== null);
 		$this->users[$user->getUniqueName()] = $user;
 	}
 
 	public function endUser(WorldEditArtUser $user){
+		assert($user !== null);
 		$this->users[$user->getUniqueName()]->save();
 		unset($this->users[$user->getUniqueName()]);
 	}

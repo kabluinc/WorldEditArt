@@ -15,8 +15,10 @@
 
 namespace WorldEditArt\User;
 
+use pocketmine\level\Location;
 use pocketmine\permission\Permissible;
 use WorldEditArt\DataProvider\Model\UserData;
+use WorldEditArt\Objects\Space\Space;
 use WorldEditArt\WorldEditArt;
 
 abstract class WorldEditArtUser implements Permissible{
@@ -24,6 +26,9 @@ abstract class WorldEditArtUser implements Permissible{
 	private $main;
 	/** @var UserData $data */
 	private $data;
+
+	/** @var Space[] $selections */
+	private $selections = [];
 
 	public function __construct(WorldEditArt $main, UserData $data){
 		$this->main = $main;
@@ -33,6 +38,10 @@ abstract class WorldEditArtUser implements Permissible{
 	public abstract function getType() : string;
 
 	public abstract function getName() : string;
+
+	public abstract function sendRawMessage(string $message);
+
+	public abstract function getLocation() : Location;
 
 	public function getUniqueName() : string{
 		return $this->getType() . "/" . $this->getName();
@@ -53,8 +62,6 @@ abstract class WorldEditArtUser implements Permissible{
 	public function sendMessage(string $id, array $vars = []){
 		$this->sendRawMessage((substr($id, 0, 5) === "%raw%") ? $id : $this->main->translate($id, $vars));
 	}
-
-	public abstract function sendRawMessage(string $message);
 
 	public function save(){
 		$this->main->getDataProvider()->saveUserData($this->data);

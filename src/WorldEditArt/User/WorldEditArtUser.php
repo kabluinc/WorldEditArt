@@ -30,6 +30,9 @@ abstract class WorldEditArtUser implements Permissible{
 	/** @var Space[] $selections */
 	private $selections = [];
 
+	/** @var bool $closed */
+	private $closed = false;
+
 	public function __construct(WorldEditArt $main, UserData $data){
 		$this->main = $main;
 		$this->data = $data;
@@ -65,5 +68,26 @@ abstract class WorldEditArtUser implements Permissible{
 
 	public function save(){
 		$this->main->getDataProvider()->saveUserData($this->data);
+	}
+
+	public function isClosed() : bool{
+		return $this->closed;
+	}
+
+	public function close(){
+		$this->save();
+		$this->closed = true;
+	}
+
+	/**
+	 * @param string $name
+	 * @return Space|null
+	 */
+	public function getSelection(string $name = "default"){
+		return $this->selections[$name] ?? null;
+	}
+
+	public function setSelection(Space $space, string $name = "default"){
+
 	}
 }

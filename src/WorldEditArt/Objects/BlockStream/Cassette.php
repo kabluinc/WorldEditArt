@@ -15,17 +15,55 @@
 
 namespace WorldEditArt\Objects\BlockStream;
 
+use pocketmine\block\Block;
+
 class Cassette{
-	/** @var BlockBuffer $buffer */
-	private $buffer;
+	/** @var BlockStream $stream */
+	private $stream;
 	/** @var BlockChanger $changer */
 	private $changer;
 
-	public function __construct(BlockBuffer $buffer, BlockChanger $changer){
-		$this->buffer = $buffer;
+	/** @var int $pointer */
+	private $pointer = 0;
+	/** @var Block[][] $buffer */
+	private $buffer;
+
+	public function __construct(BlockStream $stream, BlockChanger $changer){
+		$this->stream = $stream;
 		$this->changer = $changer;
 	}
 
-	public function tick(){
+	/**
+	 * @return Block|null
+	 */
+	public function next(){
+		$current = $this->current();
+		if($current !== null){
+			$this->pointer++;
+		}
+		return $current;
+	}
+
+	public function previous(){
+		if($this->pointer === 0){
+			return null;
+		}
+		return $this->buffer[--$this->pointer];
+	}
+
+	public function current(){
+		while(!isset($this->buffer[$this->pointer])){
+			$next = $this->stream->next();
+			if($next === null){
+				return null;
+			}
+			$change = $this->changer->changeBlock($next);
+			if($change === null){
+				continue;
+			}
+			$change->position($next);
+			return $this->buffer[$this->pointer] = [$next, $change];
+		}
+		return $this->buffer[$this->pointer];
 	}
 }

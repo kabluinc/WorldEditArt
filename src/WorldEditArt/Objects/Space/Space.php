@@ -16,23 +16,33 @@
 namespace WorldEditArt\Objects\Space;
 
 use pocketmine\level\Level;
-use WorldEditArt\Objects\BlockStream\BlockBuffer;
+use WorldEditArt\Objects\BlockStream\Cassette;
 
 abstract class Space{
 	/** @var Level $level */
 	private $level;
 
 	protected function __construct(Level $level){
-		$this->level = $level;
+		$this->level = $level; // TODO handle LevelUnloadEvent, garbage spaces and streams using that level
 	}
 
-	public function getLevel(){
+	public function getLevel() : Level{
 		return $this->level;
 	}
 
-	public abstract function getSolidBuffer() : BlockBuffer;
+	public abstract function getSolidCassette() : Cassette;
 
-	public abstract function getHollowBuffer() : BlockBuffer;
+	public abstract function getHollowCassette() : Cassette;
 
 	public abstract function getApproxBlockCount() : int;
+
+	public function isValid() : bool{
+		return true;
+	}
+
+	public function throwValid(){
+		if(!$this->isValid()){
+			throw new \InvalidStateException("Attempt to call method on an invalid Space object");
+		}
+	}
 }

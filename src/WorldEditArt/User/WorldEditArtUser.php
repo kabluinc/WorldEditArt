@@ -16,6 +16,7 @@
 namespace WorldEditArt\User;
 
 use pocketmine\level\Location;
+use pocketmine\level\Position;
 use pocketmine\permission\Permissible;
 use WorldEditArt\DataProvider\Model\UserData;
 use WorldEditArt\Objects\Space\Space;
@@ -89,5 +90,9 @@ abstract class WorldEditArtUser implements Permissible{
 
 	public function setSelection(Space $space, string $name = "default"){
 
+	}
+
+	public function canBuild(Position $pos) : bool{
+		return true; // TODO under-construction zones
 	}
 }

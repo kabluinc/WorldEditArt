@@ -25,14 +25,16 @@ class CassetteQueue implements BulkJob{
 	/** @var WorldEditArtUser */
 	private $user;
 
-	/** @var bool $currentDirection */
-	private $currentDirection = self::DIRECTION_FORWARDS;
-	/** @var int $undoCounter */
+	/** @var int $undoCounter the number of cassettes to undo */
 	private $undoCounter = 0;
 
-	/** @var Cassette[] $undoQueue */
+	/** @var Cassette[] $undoQueue contains the history of cassettes played */
 	private $undoQueue = [];
-	/** @var Cassette[] $execQueue */
+	/**
+	 * If $undoCounter > 0, execute [0] in reverse direction
+	 *
+	 * @var Cassette[] $execQueue
+	 */
 	private $execQueue = [];
 	/** @var Cassette[] $redoQueue */
 	private $redoQueue = [];
@@ -46,17 +48,60 @@ class CassetteQueue implements BulkJob{
 		$this->execQueue[] = $cassette;
 	}
 
-	public function undo(){
-
+	public function undo() : bool{
+		if($this->undoCounter >= count($this->undoQueue) + (isset($this->execQueue[0]) ? 1 : 0)){ // undo queue + current executing
+			return false; // nothing to undo
+		}
+		if(count($this->execQueue) > 1){
+			array_unshift($this->redoQueue, array_pop($this->execQueue)); // postpone the scheduled execution
+			return true;
+		}
+		$this->undoCounter++;
+		return true;
 	}
 
-	public function redo(){
-
+	public function redo() : bool{
+		if($this->undoCounter === 0){
+			if(count($this->redoQueue) === 0){
+				return false; // nothing to undo
+			}
+			$this->execQueue[] = array_shift($this->redoQueue); // actual redo
+		}else{
+			$this->undoCounter--; // remove the undo, de facto redo
+		}
+		return true;
 	}
 
 	public function doOnce(){
-		$this->execQueue[0]->tick();
-		if($this->execQueue[0]->)
+		if($this->undoCounter > 0){
+			assert(isset($this->execQueue[0]));
+			$change = $this->execQueue[0]->previous();
+			if($change === null){
+				$this->undoCounter--;
+				$undone = array_shift($this->execQueue);
+				array_unshift($this->redoQueue, $undone);
+				if($this->undoCounter > 0){
+					array_unshift($this->execQueue, array_pop($this->undoQueue)); // move next undo to execution
+				}
+			}else{
+				if($this->user->canBuild($change[0])){
+					$change[0]->getLevel()->setBlock($change[0], $change[0], false, false);
+				}else{
+					// TODO handle error
+				}
+			}
+		}elseif(isset($this->execQueue[0])){
+			$change = $this->execQueue[0]->next();
+			if($change === null){
+				$this->undoQueue[] = array_shift($this->execQueue);
+			}else{
+				if($this->user->canBuild($change[1])){
+					$change[1]->getLevel()->setBlock($change[1], $change[1], false, false);
+				}else{
+					// TODO handle error
+				}
+			}
+		}
 	}
 
 	public function hasMore() : bool{

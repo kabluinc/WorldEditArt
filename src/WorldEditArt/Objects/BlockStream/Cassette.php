@@ -34,7 +34,7 @@ class Cassette{
 	}
 
 	/**
-	 * @return Block|null
+	 * @return Block[]|null
 	 */
 	public function next(){
 		$current = $this->current();
@@ -44,6 +44,9 @@ class Cassette{
 		return $current;
 	}
 
+	/**
+	 * @return Block[]|null
+	 */
 	public function previous(){
 		if($this->pointer === 0){
 			return null;
@@ -51,6 +54,9 @@ class Cassette{
 		return $this->buffer[--$this->pointer];
 	}
 
+	/**
+	 * @return Block[]|null
+	 */
 	public function current(){
 		while(!isset($this->buffer[$this->pointer])){
 			$next = $this->stream->next();

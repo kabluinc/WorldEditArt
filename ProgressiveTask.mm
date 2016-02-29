@@ -14,8 +14,7 @@
       Practically only BulkJobManager
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <font NAME="SansSerif" SIZE="12"/>
 <node CREATED="1456578183078" ID="ID_969831219" MODIFIED="1456578582766">
 <richcontent TYPE="NODE"><html>
@@ -30,13 +29,12 @@
       Separates load for different BulkJobs
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 <node CREATED="1456578198396" ID="ID_605645628" MODIFIED="1456578213003" TEXT="Is a BulkJob itself, although does not manage itself"/>
 <node CREATED="1456578153774" ID="ID_1265375722" MODIFIED="1456578160437" TEXT="CassetteQueue">
 <node CREATED="1456578288966" ID="ID_844947173" MODIFIED="1456578292042" TEXT="Is a BulkJob"/>
-<node CREATED="1456578050781" FOLDED="true" ID="ID_80139198" MODIFIED="1456581258561" TEXT="Manages in unit of cassettes">
+<node CREATED="1456578050781" ID="ID_80139198" MODIFIED="1456736999489" TEXT="Manages in unit of cassettes">
 <node CREATED="1456578082720" ID="ID_1417862052" MODIFIED="1456578104396" TEXT="Each cassette consists of a rewindable stream of block changes"/>
 </node>
 <node CREATED="1456581259978" ID="ID_1567290729" MODIFIED="1456581265425" TEXT="Cassette">
@@ -76,8 +74,7 @@
       when the current cassette is done.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 <node CREATED="1456581186180" ID="ID_850741395" MODIFIED="1456581236347" TEXT="Next cassette to run at the beginning, last cassette to run at the end"/>
 </node>
@@ -141,8 +138,7 @@
       if defined load threshold is reached
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 </node>
 </map>

@@ -22,7 +22,7 @@ class CassetteQueue implements BulkJob{
 	const DIRECTION_FORWARDS = false;
 	const DIRECTION_BACKWARDS = true;
 
-	/** @var WorldEditArtUser */
+	/** @var WorldEditArtUser $user */
 	private $user;
 
 	/** @var int $undoCounter the number of cassettes to undo */

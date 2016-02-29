@@ -22,7 +22,7 @@
 namespace WorldEditArt\Objects\Space\Cuboid;
 
 class HollowCuboidBlockStream extends SolidCuboidBlockStream{
-	/** @var int */
+	/** @var int $step */
 	private $step = 0;
 	// [XY (-Z), XY (+Z), YZ' (-X), YZ' (+X), X'Z' (-Y), X'Z' (+Y)]
 	// foreach as AB (C): A++; A>max => B++; B>max => ++step, re-adapt ABC

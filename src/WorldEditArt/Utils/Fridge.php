@@ -19,11 +19,11 @@ use pocketmine\utils\TextFormat;
 use WorldEditArt\WorldEditArt;
 
 class Fridge{
-	/** @var WorldEditArt */
+	/** @var WorldEditArt $main */
 	private $main;
-	/** @var object[]|callable[] */
+	/** @var object[]|callable[] $container */
 	private $container = [];
-	/** @var int */
+	/** @var int $nextObjectId */
 	private $nextObjectId = 0;
 
 	public function __construct(WorldEditArt $main){

@@ -39,7 +39,7 @@ class SolidCuboidBlockStream implements BlockStream{
 	/** @var int $maxZ */
 	protected $maxZ;
 
-	/** @var Level */
+	/** @var Level $level */
 	protected $level;
 	/** @var Vector3 $temporalVector */
 	protected $temporalVector;

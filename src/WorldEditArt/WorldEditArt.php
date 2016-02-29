@@ -36,7 +36,7 @@ class WorldEditArt extends PluginBase{
 	private $dataProvider;
 	/** @var WorldEditArtCommand $command */
 	private $command;
-	/** @var EventListener */
+	/** @var EventListener $listener */
 	private $listener;
 
 	/** @var WorldEditArtUser[] $users */

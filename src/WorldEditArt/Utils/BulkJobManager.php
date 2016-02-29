@@ -16,7 +16,7 @@
 namespace WorldEditArt\Utils;
 
 class BulkJobManager implements BulkJob{
-	/** @var BulkJob[] */
+	/** @var BulkJob[] $jobs */
 	private $jobs = [];
 	private $pointer = 0;
 

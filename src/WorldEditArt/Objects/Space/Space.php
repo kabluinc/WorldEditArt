@@ -16,7 +16,9 @@
 namespace WorldEditArt\Objects\Space;
 
 use pocketmine\level\Level;
-use WorldEditArt\Objects\BlockStream\Cassette;
+use pocketmine\level\Position;
+use pocketmine\math\Vector3;
+use WorldEditArt\Objects\BlockStream\BlockStream;
 
 abstract class Space{
 	/** @var Level $level */
@@ -30,11 +32,26 @@ abstract class Space{
 		return $this->level;
 	}
 
-	public abstract function getSolidCassette() : Cassette;
+	public abstract function getSolidBlockStream() : BlockStream;
 
-	public abstract function getHollowCassette() : Cassette;
+	/**
+	 * @param int $padding the thickness inside, default 1
+	 * @param int $margin  the thickness outside, default 0
+	 *
+	 * @return BlockStream
+	 */
+	public abstract function getHollowBlockStream(int $padding = 1, int $margin = 0) : BlockStream;
 
 	public abstract function getApproxBlockCount() : int;
+
+	public function isInside(Vector3 $pos) : bool{
+		if($pos instanceof Position and $pos->level !== $this->level){
+			return false;
+		}
+		return $this->isInsideImpl($pos);
+	}
+
+	protected abstract function isInsideImpl(Vector3 $pos) : bool;
 
 	public function isValid() : bool{
 		return true;

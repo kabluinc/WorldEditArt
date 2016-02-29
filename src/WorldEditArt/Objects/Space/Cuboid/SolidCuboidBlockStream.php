@@ -21,75 +21,20 @@
 
 namespace WorldEditArt\Objects\Space\Cuboid;
 
-use pocketmine\level\Level;
 use pocketmine\math\Vector3;
-use WorldEditArt\Objects\BlockStream\BlockStream;
+use WorldEditArt\Objects\BlockStream\CuboidBlockStream;
 
-class SolidCuboidBlockStream implements BlockStream{
-	/** @var int $minX */
-	protected $minX;
-	/** @var int $minY */
-	protected $minY;
-	/** @var int $minZ */
-	protected $minZ;
-	/** @var int $maxX */
-	protected $maxX;
-	/** @var int $maxY */
-	protected $maxY;
-	/** @var int $maxZ */
-	protected $maxZ;
-
-	/** @var Level $level */
-	protected $level;
-	/** @var Vector3 $temporalVector */
-	protected $temporalVector;
-
-	/** @var bool $valid */
-	protected $valid = true;
-
+class SolidCuboidBlockStream extends CuboidBlockStream{
 	public function __construct(CuboidSpace $cuboidSpace){
 		$cuboidSpace->throwValid();
-		$this->level = $cuboidSpace->getLevel();
 		$pos1 = $cuboidSpace->getPos1();
 		$pos2 = $cuboidSpace->getPos2();
-		$this->minX = min($pos1->x, $pos2->x);
-		$this->minY = min($pos1->y, $pos2->y);
-		$this->minZ = min($pos1->z, $pos2->z);
-		$this->maxX = max($pos1->x, $pos2->x);
-		$this->maxY = max($pos1->y, $pos2->y);
-		$this->maxZ = max($pos1->z, $pos2->z);
-		$this->temporalVector = new Vector3($this->minX, $this->minY, $this->minZ);
-	}
-
-	public function next(){
-		if(!$this->valid){
-			return null;
-		}
-		$return = $this->level->getBlock($this->temporalVector);
-		$this->incrementX();
-		return $return;
-	}
-
-	private function incrementX(){
-		$this->temporalVector->x++;
-		if($this->temporalVector->x > $this->maxX){
-			$this->incrementY();
-			$this->temporalVector->x = $this->minX;
-		}
-	}
-
-	private function incrementY(){
-		$this->temporalVector->y++;
-		if($this->temporalVector->y > $this->maxY){
-			$this->incrementZ();
-			$this->temporalVector->y = $this->minY;
-		}
-	}
-
-	private function incrementZ(){
-		$this->temporalVector->z++;
-		if($this->temporalVector->z > $this->maxZ){
-			$this->valid = false;
-		}
+		$minX = min($pos1->x, $pos2->x);
+		$minY = min($pos1->y, $pos2->y);
+		$minZ = min($pos1->z, $pos2->z);
+		$maxX = max($pos1->x, $pos2->x);
+		$maxY = max($pos1->y, $pos2->y);
+		$maxZ = max($pos1->z, $pos2->z);
+		parent::__construct($cuboidSpace->getLevel(), new Vector3($minX, $minY, $minZ), new Vector3($maxX, $maxY, $maxZ));
 	}
 }

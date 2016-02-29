@@ -24,7 +24,8 @@ namespace WorldEditArt\Objects\Space\Cuboid;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
-use WorldEditArt\Objects\BlockStream\Cassette;
+use WorldEditArt\Objects\BlockStream\BatchBlockStream;
+use WorldEditArt\Objects\BlockStream\BlockStream;
 use WorldEditArt\Objects\Space\Space;
 
 class CuboidSpace extends Space{
@@ -67,12 +68,33 @@ class CuboidSpace extends Space{
 		$this->pos2 = $pos2->floor();
 	}
 
-	public function getSolidCassette() : Cassette{
-		return new Cassette(new SolidCuboidBlockStream($this));
+	public function getSolidBlockStream() : BlockStream{
+		return new SolidCuboidBlockStream($this);
 	}
 
-	public function getHollowCassette() : Cassette{
-		return new Cassette(new HollowCuboidBlockStream($this));
+	public function getHollowBlockStream(int $padding = 1, int $margin = 0) : BlockStream{
+		if($padding !== 1 or $margin !== 0){
+			$streams = [];
+			for($i = 1; $i <= $padding; $i++){
+				$streams[] = new HollowCuboidBlockStream($this->grow(-$i, -$i, -$i, -$i, -$i, -$i));
+			}
+			for($i = 1; $i <= $margin; $i++){
+				$streams[] = new HollowCuboidBlockStream($this->grow($i, $i, $i, $i, $i, $i));
+			}
+			return new BatchBlockStream($streams);
+		}
+		return new HollowCuboidBlockStream($this);
+	}
+
+	protected function isInsideImpl(Vector3 $pos) : bool{
+		return (
+			min($this->pos1->x, $this->pos2->x) <= $pos->x and
+			max($this->pos1->x, $this->pos2->x) >= $pos->x and
+			min($this->pos1->y, $this->pos2->y) <= $pos->y and
+			max($this->pos1->y, $this->pos2->y) >= $pos->y and
+			min($this->pos1->z, $this->pos2->z) <= $pos->z and
+			max($this->pos1->z, $this->pos2->z) >= $pos->z
+		);
 	}
 
 	public function getApproxBlockCount() : int{
@@ -82,6 +104,18 @@ class CuboidSpace extends Space{
 			($this->pos1->y - $this->pos2->y + 1) *
 			($this->pos1->z - $this->pos2->z + 1)
 		);
+	}
+
+	private function grow(int $x1, int $y1, int $z1, int $x2, int $y2, int $z2){
+		return new CuboidSpace($this->getLevel(), new Vector3(
+			min($this->pos1->x, $this->pos2->x) - $x1,
+			min($this->pos1->y, $this->pos2->y) - $y1,
+			min($this->pos1->z, $this->pos2->z) - $z1
+		), new Vector3(
+			max($this->pos1->x, $this->pos2->x) + $x2,
+			max($this->pos1->y, $this->pos2->y) + $y2,
+			max($this->pos1->z, $this->pos2->z) + $z2
+		));
 	}
 
 	public function isValid() : bool{

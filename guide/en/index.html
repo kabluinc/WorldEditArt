@@ -7,6 +7,13 @@
 	<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
 	<script src="../doctree.js"></script>
+	<script>
+		$(document).ready(function(){
+			$(".hint").click(function(){
+				alert($(this).attr("title"));
+			})
+		});
+	</script>
 	<link rel="stylesheet" href="../guide.css" type="text/css">
 </head>
 <body>
@@ -200,315 +207,130 @@ Library.
 			<div class="note">
 				Installation, permission management, etc.
 			</div>
-			<div class="tree" data-name="Permissions" id="admin-permissions" style="line-height: 25px;">
-				Here is a list of permissions:
-				<script>
-					/**
-					 * @param obj collection from permissions.json
-					 * @param parUl jQuery
-					 * @param parName
-					 */
-					function addPermissionsTo(obj, parUl, parName){
-						for(var name in obj){
-							if(obj.hasOwnProperty(name)){
-								var myLi = $("<li style='padding: 4px 0'></li>");
-								var perm = obj[name];
-								var permName = parName + name;
-								var desc = perm["description"];
-								var def = perm["default"];
-								if(typeof def === "boolean"){
-									def = def ? "true" : "false";
+			<!--			<div class="tree" data-name="Permissions" id="admin-permissions" style="line-height: 25px;">
+							Here is a list of permissions:
+							<script>
+								/**
+								 * @param obj collection from permissions.json
+								 * @param parUl jQuery
+								 * @param parName
+								 */
+								function addPermissionsTo(obj, parUl, parName){
+									for(var name in obj){
+										if(obj.hasOwnProperty(name)){
+											var myLi = $("<li style='padding: 4px 0'></li>");
+											var perm = obj[name];
+											var permName = parName + name;
+											var desc = perm["description"];
+											var def = perm["default"];
+											if(typeof def === "boolean"){
+												def = def ? "true" : "false";
+											}
+											if(def === "notop"){
+												def = "not op";
+											}
+											myLi.append("<code>" + permName + "</code>: " + desc + " (default <em>" + def + "</em>)");
+											if(typeof perm["children"] === "object" && Object.keys(perm["children"]).length > 0){
+												var children = perm["children"];
+												var ul = $("<ul></ul>");
+												addPermissionsTo(children, ul, permName + ".");
+												myLi.append("<br><strong>Children:</strong>");
+												ul.appendTo(myLi);
+											}
+											myLi.appendTo(parUl);
+										}
+									}
 								}
-								if(def === "notop"){
-									def = "not op";
+								var data = $.ajax({
+									type: "GET",
+									url: "https://raw.githubusercontent.com/PEMapModder/WorldEditArt/master/resources/permissions.json",
+									async: false
+								}).responseText;
+								if(typeof data !== "object"){
+									data = JSON.parse(data);
 								}
-								myLi.append("<code>" + permName + "</code>: " + desc + " (default <em>" + def + "</em>)");
-								if(typeof perm["children"] === "object" && Object.keys(perm["children"]).length > 0){
-									var children = perm["children"];
-									var ul = $("<ul></ul>");
-									addPermissionsTo(children, ul, permName + ".");
-									myLi.append("<br><strong>Children:</strong>");
-									ul.appendTo(myLi);
-								}
-								myLi.appendTo(parUl);
-							}
-						}
-					}
-					var data = $.ajax({
-						type: "GET",
-						url: "https://raw.githubusercontent.com/PEMapModder/WorldEditArt/master/resources/permissions.json",
-						async: false
-					}).responseText;
-					if(typeof data !== "object"){
-						data = JSON.parse(data);
-					}
-					var container = $('<div class="tree" data-name="Full permissions list"></div>');
-					var parent = $("<ul></ul>");
-					addPermissionsTo(data, parent, "");
-					parent.appendTo(container);
-					$(document).ready(function(){
-						container.appendTo($("#admin-permissions"));
-					});
-				</script>
-			</div>
+								var container = $('<div class="tree" data-name="Full permissions list"></div>');
+								var parent = $("<ul></ul>");
+								addPermissionsTo(data, parent, "");
+								parent.appendTo(container);
+								$(document).ready(function(){
+									container.appendTo($("#admin-permissions"));
+								});
+							</script>
+						</div>-->
 		</div>
-		<div class="tree" data-name="Player Guide">
+		<div class="tree" data-name="Player Guide" data-anchor="player-guide">
 			<div class="note">Concept introduction, commands documentation and user tips</div>
-			<div class="tree" data-name="Introduction">
+			<div class="tree" data-name="Introduction" data-anchor="intro">
 				<div class="note">
 					NOTE: This guide is written assuming that administrators use the default configuration of
 					WorldEditArt.
 				</div>
 				<p>
 					WorldEditArt is an innovative plugin. This plugin is not written to <em>"port"</em> the MCPC
-					WorldEdit
-					plugin. This plugin is an entirely original work, except that some commands may follow the tradition
-					of
-					WorldEdit to make it easier for understanding. However, a lot of things are different, so don't rely
-					on
-					your knowledge on WorldEdit.
+					WorldEdit plugin. This plugin is an entirely original work. Although some commands may follow the
+					convention of WorldEdit to make it easier for understanding, there are a lot of differences that
+					make the plugin easier to use and more adapted for pocket edition users.<br>
+					In the user guide below, I'm going to explain the features of WorldEditArt one by one.
 				</p>
 			</div>
-			<div class="tree" data-name="Concepts">
+			<div class="tree" data-name="Selections" data-anchor="sel">
+				<p>The most essential component of WorldEditArt is <em>selections</em>.</p>
 				<p>
-					WorldEditArt introduces a number of new concepts into territory of world editing, as well as
-					introduces
-					a lot of improvements to make world editing easier to understand.</p>
-
-				<div class="true" data-name="General command pattern">
-					WorldEditArt uses a special pattern about command arguments. It is the best if you understand these,
-					but it doesn't really matter if you don't understand, as long as you can use them.
-					<ol>
-						<li><strong>Switches:</strong>
-							If you want to specify that something has to be enabled, you have to specify
-							<code>.property</code> in the command. For example, if you want to indicate that you want a
-							hollow cuboid instead of a filled cuboid to be set, you can type
-							<code>//set <em>.h</em> glass</code>, where <em>h</em> stands for hollow. Properties of
-							different commands will be explained later.
-						</li>
-						<li><strong>Properties:</strong>
-							If you want to specify a specific property and indicate the value, you have to specify
-							<code>,property <span class="u"><em>value</em></span></code> in the command. For example, if
-							you want to indicate that you want to set your anchor as the position of player
-							<em>Steve</em> instead of your position, you can type <code>//anchor ,p </code>, where
-							<em>p</em> stands for player. Again, properties of different commands will be explained
-							later.
-						</li>
-						<li>
-							If the command asks for an argument but you want to give multiple words, you can put
-							it in quotes <code>""</code>. For example, if you want to copy the selection with the name
-							<em>roller coaster</em>, which contains a space, you have to type
-							<code>//copy "roller coaster"</code> instead of <code>//copy roller coaster</code> - the
-							latter will only be understood as <em>roller</em> instead of <em>roller coaster</em>.
-						</li>
-					</ol>
-				</div>
-				<div class="tree" data-name="Sudo mode">
+					In conventional world-editing plugins, you run <code>//pos1</code> at one point and
+					<code>//pos2</code> at another point (or use wands). This selects the region between the two
+					points. Then you can execute various operations on the selected zone.<br>
+					However, it has an apparent limitation: no matter how you select the two points, the outcome is
+					still a cuboid. May it be a floor or a wall, it is still a flat cuboid.
+				</p>
+				<p>WorldEditArt lets you select different shapes of regions, including:</p>
+				<div class="tree" data-name="Cuboids" data-anchor="sel-cub">
 					<p>
-						World editing plugins are known as one of the most dangerous plugins - I can't imagine anything
-						more
-						dangerous than world editing plugins, except plugins that let players evaluate code/shell
-						commands
-						directly (BAD BAD BAD IDEA!!!). It can, even if not intended, have devastating destruction on
-						the
-						terrain. A simple example is that if you accidentally create a cuboid that spans over a large
-						area
-						of the map, you would probably delete everything that had been built on that world, and you may
-						just
-						be unable to undo that (although WorldEditArt <strong>does</strong> try to let you <span
-							class="term">undo</span>, there are
-						still cases that there is irreversible consequence). Therefore, sudo mode is introduced to
-						prevent
-						users from misusing WorldEditArt accidentally, or "my cat clicked on my phone and all blocks to
-						lava" (I'm sure many people have heard that, most of the time excuses).<br>
-						<strong>TL;DR:</strong>
-						Sudo mode lets you use WorldEditArt. When you just joined a server, you cannot use any
-						WorldEditArt
-						commands, except <code>//sudo</code> (of course, only if you got that permission e.g. by getting
-						op). When you do <code>//sudo</code>, you unlock the WorldEditArt commands for yourself, which
-						will
-						be locked once you leave the server (or if you specify sudo session length - read the commands
-						section for more information).
+						A cuboid is defined by two diagonally opposite points. A cuboid is inscribed between the two
+						points.<br>
+						It is difficult to explain in words, so here is a diagram that explains it:
+					</p>
+					<div>
+						<img src="data:image/png;base64,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/vZcG8EGGIrc355rI9gAQ5H723NtBBtgKHJ/e66NYAMMRe5vz7URbIChyP3tuTaCDTAUub8910awAYYi97fn2gg2wFDk/vZcG8EGGIrc355rI9gAQ5H723NtBBtgKHJ/e66NYAMMRe5vz7URbIChyP3tuTaCDTAUub8910awAYYi97fn2gg2wFDk/vZcG8EGGIrc355rI9gAQ5H723NtBBtgKHJ/e66NYAMMRe5vz7URbIChyP3tuTaCDTAUub8910awAYYi97fn2gg2wFDk/vZcG8EGGIrc355rI9gAQ5H723NtBBtgKHJ/e66NYAMMRe5vz7URbIChyP3tuTaCDTAUub8910awAYYi97fn2gg2wFDk/vZcG8EGGIrc355rI9gAQ5H723NtBBtgKHJ/e66NYAMMRe5vz7URbIChyP3tuTaCDTAUub8910awAYYi97fn2gg2wFDk/vZcG8EGGIrc355rI9gAQ5H723NtBBtgKHJ/e66NYAMMRe5vz7URbIChyP3tuTaCDTAUub8910awAYYi97fn2gg2wFDk/vZcG8EGGIrc355rI9gAQ5H723NtBBtgKHJ/e66NYAMMRe5vz7URbIChyP3tuTaCDTAUub8910awAYYi97fn2gg2wFDk/vZcG8EGGIrc355rI9gAQ5H723NtBBtgKHJ/e66NYAMMRe5vz7URbIChyP3tuTaCDTAUub8910awAYYi97fn2gg2wFDk/vZcG8EGGIrc355rI9gAQ5H723NtBBtgKHJ/e66NYAMMRe5vz7URbIChyP3tuTaCDTAUub8910awAYYi97fn2gg2wFDk/vZcG8EGGIrc355rI9gAQ5H723NtBBtgKHJ/e66NYAMMRe5vz7URbIChyP3tuTaCDTAUub8910awAYYi97fn2gg2wFDk/vZcG8EGGIrc355rI9gAQ5H723NtBBtgKHJ/e66NYAMMRe5vz7URbIChyP3tuTaCDTAUub8910awAYYi97fn2gg2wFDk/vZcG8EGGIrc355rI9gAQ5H723NtBBtgKHJ/e66NYAMMRe5vz7URbIChyP3tuTaCDTAUub8910awAYYi97fn2gg2wFDk/vZcG8EGGIrc355rI9gAQ5H723NtBBtgKHJ/e66NYAMMRe5vz7URbIChyP3tuTaCDTAUub8910awAYYi97fn2gg2wFDk/vZcG8EGGIrc355rI9gAQ5H723NtBBtgKHJ/e66NYAMMRe5vz7URbIChyP3tuTaCDTAUub8910awAYYi97fn2gg2wFDk/vZcG8EGGIrc355rI9gAQ5H723NtBBtgKHJ/e66NYAMMRe5vz7URbIChyP3tuTaCDTAUub8910awAYYi97fn2gg2wFDk/vZcG8EGGIrc355rI9gAQ5H723NtBBtgKHJ/e66NYAMMRe5vz7URbIChyP3tuTaCDTAUub8910awAYYi97fn2gg2wFDk/l5aWkq1PXz4sF7jB8EGGIrY38+fP69OnTpV7d69O9WmZX5+vnr27Fn9Fe0j2ABD0fpbobZ379603Lp1q1peXq4WFxergwcPpqB7+vRp/ZXtItgAQ9H6e2FhIYWaAm6j9fX1FG46cvOAYAMMRervV69epaMyHakNc/fu3VSrQq5tBBtgKFJ/51p0+jnM48eP3dRKsAGGIvU3R2xjINgQWbT+ztfYXrx4Ua/5iGtsAwg2RBatv//+++9q586d1VdffVXdvHmzWllZSUdqjIoOINgQWaT+/vDhQ3X69OlUz7Fjx/5zH5uXUBOCDTAUqb+vXr2aarl27Vr6s665qS4P19QGEWyAoSj9/eDBg1TH5cuX05GbdwQbYChCf+sUc8+ePdWJEyeqd+/e1Wt9I9gAQ6X3t043jxw5Uh06dKh6/fp1vdY/gg0wVHJ/v3//vjp58mQaJCjt+yfYAEMl9/elS5fS937v3r16TTkINsBQqf3966+/pu/74sWLRQwWDCLYAEMl9re+V51+6t40nY42odNbT59DXqrVbv03Ngg2wFBp/f3y5cv0FIEGC5q6P22uu1r1Ooqaj/+ePom5uX6wGYYbwQYYKq2/mx4s6B+oVd25Tv93n/57/az7JOyaRrABhkrq7263m77XJgcLFGCr3f/GjD6Njo7a1nsfVzSMYAMMldLfeiGLjtSuX79er2mGrq0NCzYdp3U6/VAj2IDylNDfa2traSqi8+fPNz4CyhEbwYaAvPe3nibQQMHRo0ert2/f1mubM3iNradf+mGm9b2O1nONDSiO5/7W0Zleozds4sgm6XQ0DxToU9CIqD4TRkWBQnnu7zwN0aNHj+o1djbex9bVUn8u6z0dtTWPYAMMee1vjXzq+9rs/QWlI9gAQx77W9+LpiE6e/ZskY9LbQXBBhjy1t8aLDh8+HCa2ttisMALgg0w5Km/9dyn3jK1f//+/7zJPRqCDTDkqb81U4e+F71ZKjqCDTDkpb8XFxfT96HpiLYDgg0w5KG/dYSmx6V0e8d2QbABhtru7/yGdt2I29TcaiUg2ABDbfa33iil0U89MqWXsmwnBBtgqM3+1mCB7lfz9Ib2WSHYAENt9ffNmzfT/1cvOt6OCDbAUBv9nedW01umtiuCDTA06/7WLB26AVdvbY/8ZMEoBBtgaJb9rcel9NZ2za325s2beu32RLABhmbZ32fOnEmnoNtxsGAQwQYYmlV/X7lyJf1/SnxruwWCDTA0i/7WyKf+H9euXavXgGADDFn3t/7d6HOrTYJgAwxZ9nd+EYvmV9vugwWDCDbAkFV/67nP/CKWZ8+e1WuREWyAIav+1s23+ndn8SKWEhFsgCGL/tacavo3o76IpQkEG2Co6f7Wv6N71Rgs+DyCDTDUZH9rbjUNFhw/fjxNSYTNEWyAoab6W4MFev5Tz4FavrU9CoINMNRUf+fBgsePH9dr8DkEG2Coif6+fft2+jf0K7aGYAMMTdvf+u+2+9xqkyDYAEPT9LeupelFLBos2M5zq02CYAMMTdrfGwcLXr58Wa/FVhFsgKFJ+/vcuXPpFPTJkyf1GoyDYAMMTdLf+UUszK02OYINMDRuf+cXsejVeTxZMDmCDTA0Tn/nF7GcPn16W7213QLBBhjaan9r1FOjn8yt1gyCDTC01f7mRSzNItgAQ1vp7+vXr6evuX//fr0G0yLYAEOj+ju/iIW51ZpFsAGGPtffa2trabBAp6GMgDaLYAMMbdbf+UUsWl69elWvRVMINsDQsP7OL2JRqD1//rxeiyYRbIChYf3N3Gr2Wg+2paWltJF1xzUQzWB/a+RTf2ZuNVutBZsOwXU4vmvXrrShtczPz/OORIQwrL+///776ssvv0xPFjBYYKuVYNNG14tetfz000/V8vJy2oNp7iluUkTpNvb3jz/+mPr7zp071b59+6odO3ZwCjoDrQTbwsJC2uiDF071Fh6Fm47cgFJ9rr8PHDhAf8/AzINNQ9s6KtvshsQ8v7uuSeiCKwtLSYuuqen0U2ciw9y9ezf1t0IOdmYebNr42rA6PB/m999///eaBAtLqctm/a3TUP29fg5gx90R2y+//JI2PEdsLCUu+Yhts/7miG02Wr3GNvjiV66xIQL6u32tBNvGUSPt2VZWVtKejFFRREB/t6+VYBNtfO3ZtKHzdQntydjoiID+bldrwZbpmpuuTXDNARHR3+1oPdgAoGkEG4BwCDYA4RBsAMIh2ACEQ7ABCIdgAxBOUcHWXe1/w/XNjlp6HX373B+E8vX6bTw31/mkv7Ws9zr1V2AcxQRbp7/lu/0NXVX/nxVhrp90hBsiULB1+8G2sb/1u85ct9/evY8rsGVFBNtmG1hxNtfpr1vt/x1QsGHBRn9Prohg0ykoR2aIbFiwaV1H6zhiG1sxwbbaLeJbBSaiEBt2jY2jtckUkRba6L2O9mYcsSGmYUdsmFwRwaZNzTU2REawNauY8ztGRREZwdasYoJNuI8NURFszSoq2ABgKwg2AOEQbADCIdgAhEOwAQiHYAMQDsEGIByCDUA4BBuAcAg2AOEQbADCIdgAhEOwAQiHYAMQDsEGIByCDUA4BBuAcAg2AOEQbADCIdgAhEOwAQiHYAMQDsEGIByCDUA4BBuAcAg2AOEQbADCIdgABFNV/wNoKnTW9Jg3bgAAAABJRU5ErkJggg==">
+					</div>
+					<p>
+						In this diagram, <code>AP</code>, <code>BQ</code> and <code>CR</code> are three pairs of
+						diagonal points. To select this cuboid, go to <code>A</code>, run the command <code>//1</code>
+						(alias for <code>//pos1</code>), then go to <code>B</code>, and run the command <code>//2</code>.
+						By typing <code>//1</code> or <code>//2</code> again, you can resize the cuboid by changing
+						one of the points.
+					</p>
+					<p>
+						Apart from using commands, you can also use <!--suppress HtmlUnknownAnchorTarget -->
+						<a href="#wands">wands</a> to select the two points.<br>
+						This is basically the same as the above method, except that instead of typing a command, you use
+						the defined wand item to define the two diagonal points. By default, clicking an iron hoe on a
+						block sets the block as position 1, while <span
+							class="hint"
+							title="If you are in survival mode, no need to wait until the block breaks">long-clicking it</span>
+						sets the block as position 2.
+					</p>
+					<p>
+						Another method is to use the <code>//cub s &lt;diagonal length&gt;</code> command. This draws a
+						cuboid by shooting a ray of <em>&lt;diagonal length&gt;</em> blocks long at the direction you
+						are facing. Your current position is position 1, and the other end of the ray is position 2.
 					</p>
 				</div>
-				<div class="tree" data-name="Safe mode and Under-Construction Zones (UCZs)">
-					<p>
-						We may occasionally encounter these cases:
-					</p>
-					<ul>
-						<li>This server has a bad builder. He said he was building a stadium, so I went there and
-							watched.
-							Then he suddenly suffocated me with blocks!<br>
-							(The builder tried to set blocks of an area without noticing that a player entered the
-							editing
-							area)
-						</li>
-						<li>I just clicked an extra zero. Why did the selection get so big?</li>
-					</ul>
-					<p>
-						If you have safe mode enabled, WorldEditArt will not change anything for you for blocks that are
-						not
-						in UCZs.<br>
-						To mark a zone as under-construction:
-					</p>
-					<ol>
-						<li>Make a <span class="term">selection</span>.</li>
-						<li>Run the command <code>//uc</code>.</li>
-					</ol>
-					To unmark a zone as under-construction:
-					<ol>
-						<li>Walk into a UCZ.</li>
-						<li>Run the command <code>//uuc</code>.</li>
-					</ol>
+				<div class="tree" data-name="Spheres" data-anchor="sel-sph">
+					<p class="note">Disambiguation: This section is about regular spheres. For the kind of sphere where
+						one of the three radius axes is the longest/shortest, see
+						<!--suppress HtmlUnknownAnchorTarget -->
+						<a href="#sel-ellip">Ellipsoids.</a></p>
+					It is also possible to select regions in spherical shape.
 				</div>
-				<div class="tree" data-name="Selections">
-					In traditional world edit plugins, a &quot;selection&quot; refers to a cuboid which you defined by
-					doing <code>//pos1</code> and <code>//pos2</code>. This usage is supported in WorldEditArt, but it
-					also supports more choices.<br>
-					Selections in WorldEditArt can theoretically be in any shapes. However, currently, only the most
-					popular three shapes, namely cuboids, spheres and cylinders, can be selected through commands.
-					(Another plugin can use the WorldEditArt API to define new shapes)<br>
-
-					<div class="tree" data-name="Cuboids">
-						A cuboid is a polygon with 6 faces, each parallel to one of the X, Y and Z planes. In simple
-						words, a cuboid can be of any size, but it must stand upright on the ground.<br>
-						There are two ways to define a cuboid:
-
-						<div class="tree" data-name="//pos1, //pos2">
-							The old-fashioned way and most precise way is to use these two traditional commands. Let's
-							see an example.
-							<pre>
-  P +--------+ A
-   /        /|
-S +--------+ |
-  |        | |
-  |        | + Q
-  |        |/
-B +--------+ R
-							</pre>
-							In this diagram, we are going to select the cuboid AB. To do so:
-							<ol>
-								<li>Walk to point <em>A</em></li>
-								<li>Execute <code>//1</code> (alias of <code>//pos1</code>)</li>
-								<li>Walk to point <em>B</em></li>
-								<li>Execute <code>//2</code> (alias of <code>//pos2</code>)</li>
-							</ol>
-							Note that you have to choose two opposite vertexes in all dimensions. For example,
-							<strong>AP</strong>, <strong>AS</strong>, <strong>AQ</strong> and <strong>AR</strong> won't
-							work. Only <strong>AB</strong> would select the whole cuboid. Actually, you can think as if
-							you are dragging open a cuboid when you walk from A to B.<br>
-							On the other hand, you can also use <strong>PR</strong> or <strong>QS</strong>, since they
-							are also opposite vertexes.<br>
-							<a name="bp-switches"></a>
-							If you don't want to keep walking around the world, you can tell another player (for
-							example, <i>Steve</i>) to stand at <strong>A</strong>, then you stand at <strong>B</strong>,
-							then you can do <code>//1 ,p steve</code> <code>//2</code> to quickly finish the selection
-							without walking.<br>
-							Another mechanism is to use bookmarks. If you didn't name your bookmark (your bookmark name
-							is <code>default</code>), you just need to type <code>//1 .b</code> (or <code>//2 .b</code>).
-							If you gave your bookmark a special name, instead of typing <code>.b</code>, type <code>,b
-							<em><span class="u">name of bookmark</span></em></code>. Note that the period <code>.</code>
-							has been changed to a comma <code>,</code>.<br>
-							As it is like in all other commands, if the bookmark name contains space(s), put quotes
-							<code>&quot;</code> around the name. For example: <code>//1 ,b "team resources base"</code>.<br>
-						</div>
-						<div class="tree" data-name="//grow">
-							Another method of creating cuboids is the <code>//grow</code> command. It was already
-							present as <code>//cub grow</code> in an older version of WorldEditArt, but the mechanism is
-							a bit different &dash; the X, Y and Z parameters are now reflected. This command is useful
-							for creating cuboids of fixed sizes. It is simple to use. Just run
-							<code>//grow <em style="text-decoration: underline;">x</em>
-								<em style="text-decoration: underline;">y</em>
-								<em style="text-decoration: underline;">z</em></code>, and you will be in the center of
-							a
-							selected cuboid of
-							2<span class="u">x</span>&times;2<span class="u">y</span>&times;2<span class="u">z</span>,
-							like this:
-							<pre>
-<b>43211234</b>
-+------+  <b>3</b>
-|      |  <b>2</b>
-|  ()  |  <b>1</b>
-|  ()  |  <b>1</b>
-|      |  <b>2</b>
-+------+  <b>3</b>
-<b>43211234</b>
-							</pre>
-							This is the front view of the player (noted as <code>()</code> in the diagram) running
-							<code>//grow 4 3 5</code>. Note that the 5 blocks across the Z axis are not visible because
-							this is a front view.
-						</div>
-						<div class="tree" data-name="//shoot">
-							If you had experience in selecting a range of files on a computer, you would understand the
-							concept of this - a cuboid starts at your position, and to the direction you look at, a
-							diagonal shoots.<br>
-							OK, I know that I am making it even more confusing. A picture is worth a thousand words,
-							so...
-							<pre>
-<strong>A</strong> &#8600;--------+
-  |\       |
-  | \      |
-  |  \     |
-  |   \    |
-  |    \   |
-  |     \  |
-  |      \ |
-  |       \|
-  |--------+ <strong>B</strong>
-							</pre>
-							The tiny arrow on the left top corner indicates that a player is looking at that direction,
-							and then a cuboid of this shape formed along the diagonal in <code>\</code>. This cuboid is
-							formed by typing the command <code>//shoot 11</code> (the length between <strong>A</strong>
-							and <strong>B</strong> is 11).
-						</div>
-					</div>
-					<div class="tree" data-name="Spheres">
-						WorldEditArt currently only supports regular spheres. A sphere selection of 5 blocks radius can
-						be made by simply typing the command: <code>//sphere 5</code> (or <code>//sph 5</code> for
-						short).<br>
-						The sphere will take your current position as the center. To make the sphere take another
-						player's position as the center, like the cuboid <code>,p</code> switch, type <code>//sph 5 ,p
-						steve</code> to use <em>Steve</em>'s position as center of sphere, or <code>,b <em><span
-							class="u">name of bookmark</span></em></code> or <code>.b</code> to use bookmarks. For more
-						details, see the <a href="#bp-switches">description about cuboids</a>.
-					</div>
-				</div>
-				<div class="tree" data-name="Editing">
-					WorldEditArt supports setting blocks randomly from a weighted list, but the syntax is a bit
-					different from that in WorldEdit for Bukkit. <br>
-
-					<div class="tree" data-name="Weighted block lists">
-						A weighted block list means that instead of only replacing blocks with one block type,
-						WorldEditArt will choose random blocks from a list of block types, and you can decide which
-						block type will appear the most, which one the least, etc.<br>
-						Block types are separated by spaces. Each block type should be in one of these formats:
-						<pre>
-1. block
-2. block:damage
-3. weight/block
-4. weight/block:damage
-						</pre>
-						where <code>weight</code> should be replaced by the weight of the block (relative chance
-						to get spawned), and <code>damage</code> should be replaced by the damage value of the
-						block. The default values of them are <code>1</code> and <code>0</code> respectively.
-						<code>block</code> should be replaced by the block ID or name of the block. A list of block
-						names can be found <!--suppress HtmlUnknownAnchorTarget -->
-						<a href="items.html#no-items">here</a>.<br>
-						Examples:
-						<ul>
-							<li>
-								If you <code>//set 0.05/glowstone grass</code> on a piece of ground, you are making a
-								grass ground pierced with glowstone blocks (5 out of 105 blocks are glowstone)
-							</li>
-							<li>
-								If you <code>10/stone 10/wood coal_ore still_water cobweb 0.01/diamond_ore
-								200/air</code>, it will end up like a skygrid map that isn't in grids but random
-								positions.
-							</li>
-						</ul>
-					</div>
+				<div class="tree" data-name="Ellipsoids" data-anchor="sel-ellip">
+					An ellipse in WorldEditArt is not just an arbitrary region with curved surface. It is a sphere, but
+					stretched or compressed along a certain axis (horizontally or vertically).<br>
+					The syntax for selecting an ellipsoid is
+					<code>//ell &lt;radius&gt; &lt;stretch/compress direction&gt; &lt;special radius&gt;</code>
 				</div>
 			</div>
+			<div class="tree" data-name="Wands" data-anchor="wands">TODO</div>
 		</div>
 		<div class="tree" data-name="Developer Guide">
 			<div class="note">API documentation</div>
@@ -527,7 +349,7 @@ B +--------+ R
 			</div>
 			<div class="tree" data-name="GitHub issues">
 				<div class="note">
-					Note: use GitHub issues **only** for issue reporting and enhancement suggestions.
+					Note: please use GitHub issues <b>only</b> for issue reporting and enhancement suggestions.
 				</div>
 				<a href="https://github.com/PEMapModder/WorldEditArt/issues/new">WorldEditArt Issues</a>
 			</div>

@@ -45,6 +45,10 @@ code, pre{
 .u{
 	text-decoration: underline;
 }
+.hint{
+	border-bottom: 1px dotted;
+	cursor:        help;
+}
 li.depth-1{
 	list-style-type: decimal;
 }

@@ -84,8 +84,11 @@ function gotoAnchor(anchor){
 			switchSpoiler($this.attr("data-spoiler-name"));
 		}
 	});
+	if(target.css("display") == "none"){
+		switchSpoiler(target.attr("data-spoiler-name"));
+	}
 	$("html, body").animate({
-		scrollTop: Math.max(0, target.parent().prev().offset().top - $(window).height() * 0.1)
+		scrollTop: Math.max(0, target.offset().top - $(window).height() * 0.1)
 	}, 200, "swing", function(){
 		var header = target.parent().prev();
 		header.css("background-color", "#B11D98");
@@ -102,8 +105,10 @@ $(document).ready(function(){
 		var $this = $(this);
 		var name = $this.attr("data-name");
 		var parents = $this.parents(".tree");
-		var anchorId = "anchor-auto-" + (nextAnchorId++);
-		$this.prepend('<a name="' + anchorId + '"></a>');
+		var anchorId = $this.attr("data-anchor");
+		if(typeof anchorId === typeof undefined){
+			anchorId = "anchor-auto-" + (nextAnchorId++);
+		}
 		var clazz = "depth-" + parents.length;
 		if(parents.length == 0){
 			var tmpTree = new Tree(name, anchorId, clazz);
@@ -127,6 +132,18 @@ $(document).ready(function(){
 		var onclick = 'switchSpoiler("' + id + '");';
 		bef.attr("onclick", onclick);
 		bef.prependTo($div);
+		var anchorTag = $("<a>&sect;</a>");
+		anchorTag.attr("name", anchorId);
+		anchorTag.attr("href", "#" + anchorId);
+		anchorTag.css("color", bef.css("background-color"));
+		anchorTag.css("text-decoration", "none");
+		anchorTag.css("font-weight", "normal");
+		anchorTag.prependTo(bef);
+		bef.hover(function(){
+			anchorTag.css("color", "inherit");
+		}, function(){
+			anchorTag.css("color", bef.css("background-color"));
+		});
 		$div.attr("data-depth", depth);
 		$div.addClass("heading");
 		if(depth > 0){

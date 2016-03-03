@@ -16,6 +16,7 @@
 namespace WorldEditArt\Objects\Space\Sphere;
 
 use pocketmine\block\Block;
+use WorldEditArt\Objects\BlockStream\CuboidBlockStream;
 
 class HollowSphereBlockStream extends SolidSphereBlockStream{
 	/** @var int $minDistSq */
@@ -28,6 +29,9 @@ class HollowSphereBlockStream extends SolidSphereBlockStream{
 		$radius = $sphere->getRadius();
 		$this->minDistSq = ($radius - $padding) ** 2;
 		$this->maxDistSq = ($radius + $margin) ** 2;
+		CuboidBlockStream::__construct($sphere->getLevel(),
+			$sphere->getCenter()->subtract($radius + $margin, $radius + $margin, $radius + $margin),
+			$sphere->getCenter()->add($radius + $margin, $radius + $margin, $radius + $margin));
 	}
 
 	protected function accept(Block $block) : bool{
